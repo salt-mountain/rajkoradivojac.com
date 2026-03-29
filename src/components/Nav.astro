@@ -1,0 +1,99 @@
+---
+import { books } from '../data/books';
+---
+
+<nav
+  id="main-nav"
+  class="fixed top-0 left-0 right-0 z-50 bg-dark-900/95 backdrop-blur-sm border-b border-dark-600 transition-all duration-300"
+>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="flex items-center justify-between h-16">
+      <a href="#hero" class="text-primary font-serif text-xl font-bold tracking-wide">
+        Rajko Radivojac
+      </a>
+
+      <!-- Mobile menu button -->
+      <button
+        id="mobile-menu-btn"
+        class="md:hidden text-gray-300 hover:text-primary transition-colors"
+        aria-label="Toggle menu"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            id="menu-icon"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
+      </button>
+
+      <!-- Desktop nav -->
+      <div class="hidden md:flex items-center space-x-8">
+        {books.map((book) => (
+          <a
+            href={`#${book.id}`}
+            class="text-sm uppercase tracking-wider text-gray-400 hover:text-primary transition-colors duration-200"
+          >
+            {book.title}
+          </a>
+        ))}
+        <a
+          href="#about"
+          class="text-sm uppercase tracking-wider text-gray-400 hover:text-primary transition-colors duration-200"
+        >
+          About
+        </a>
+        <a
+          href="#newsletter"
+          class="text-sm uppercase tracking-wider text-gray-400 hover:text-primary transition-colors duration-200"
+        >
+          Contact
+        </a>
+      </div>
+    </div>
+
+    <!-- Mobile nav -->
+    <div id="mobile-menu" class="hidden md:hidden pb-4">
+      <div class="flex flex-col space-y-3">
+        {books.map((book) => (
+          <a
+            href={`#${book.id}`}
+            class="mobile-nav-link text-sm uppercase tracking-wider text-gray-400 hover:text-primary transition-colors duration-200"
+          >
+            {book.title}
+          </a>
+        ))}
+        <a
+          href="#about"
+          class="mobile-nav-link text-sm uppercase tracking-wider text-gray-400 hover:text-primary transition-colors duration-200"
+        >
+          About
+        </a>
+        <a
+          href="#newsletter"
+          class="mobile-nav-link text-sm uppercase tracking-wider text-gray-400 hover:text-primary transition-colors duration-200"
+        >
+          Contact
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  const btn = document.getElementById('mobile-menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+
+  btn?.addEventListener('click', () => {
+    menu?.classList.toggle('hidden');
+  });
+
+  mobileLinks.forEach((link) => {
+    link.addEventListener('click', () => {
+      menu?.classList.add('hidden');
+    });
+  });
+</script>

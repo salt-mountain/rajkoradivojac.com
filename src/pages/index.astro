@@ -1,0 +1,25 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import BookSection from '../components/BookSection.astro';
+import About from '../components/About.astro';
+import Newsletter from '../components/Newsletter.astro';
+import Footer from '../components/Footer.astro';
+import ExcerptModal from '../components/ExcerptModal.astro';
+import { books } from '../data/books';
+---
+
+<Layout title="Rajko Radivojac — Author">
+  <Nav />
+  <main>
+    <Hero />
+    {books.map((book, index) => (
+      <BookSection book={book} index={index} />
+    ))}
+    <About />
+    <Newsletter />
+  </main>
+  <Footer />
+  <ExcerptModal />
+</Layout>
