@@ -31,14 +31,32 @@ import { books } from '../data/books';
 
       <!-- Desktop nav -->
       <div class="hidden md:flex items-center space-x-8">
-        {books.map((book) => (
-          <a
-            href={`#${book.id}`}
-            class="text-sm uppercase tracking-wider text-gray-400 hover:text-primary transition-colors duration-200"
+        <!-- Books dropdown -->
+        <div class="relative" id="books-dropdown">
+          <button
+            id="books-dropdown-btn"
+            class="text-sm uppercase tracking-wider text-gray-400 hover:text-primary transition-colors duration-200 flex items-center gap-1"
           >
-            {book.title}
-          </a>
-        ))}
+            Books
+            <svg class="w-3.5 h-3.5 transition-transform duration-200" id="dropdown-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <div
+            id="books-dropdown-menu"
+            class="hidden absolute top-full left-0 mt-2 min-w-56 bg-dark-800 border border-dark-600 rounded-lg shadow-xl py-2"
+          >
+            {books.map((book) => (
+              <a
+                href={`#${book.id}`}
+                class="books-dropdown-link block px-4 py-2 text-sm text-gray-400 hover:text-primary hover:bg-dark-700 transition-colors duration-200"
+              >
+                {book.title}
+              </a>
+            ))}
+          </div>
+        </div>
+
         <a
           href="#about"
           class="text-sm uppercase tracking-wider text-gray-400 hover:text-primary transition-colors duration-200"
@@ -83,6 +101,7 @@ import { books } from '../data/books';
 </nav>
 
 <script>
+  // Mobile menu toggle
   const btn = document.getElementById('mobile-menu-btn');
   const menu = document.getElementById('mobile-menu');
   const mobileLinks = document.querySelectorAll('.mobile-nav-link');
@@ -95,5 +114,45 @@ import { books } from '../data/books';
     link.addEventListener('click', () => {
       menu?.classList.add('hidden');
     });
+  });
+
+  // Books dropdown
+  const dropdownBtn = document.getElementById('books-dropdown-btn');
+  const dropdownMenu = document.getElementById('books-dropdown-menu');
+  const dropdownChevron = document.getElementById('dropdown-chevron');
+  const dropdownLinks = document.querySelectorAll('.books-dropdown-link');
+
+  function openDropdown() {
+    dropdownMenu?.classList.remove('hidden');
+    dropdownChevron?.classList.add('rotate-180');
+  }
+
+  function closeDropdown() {
+    dropdownMenu?.classList.add('hidden');
+    dropdownChevron?.classList.remove('rotate-180');
+  }
+
+  dropdownBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (dropdownMenu?.classList.contains('hidden')) {
+      openDropdown();
+    } else {
+      closeDropdown();
+    }
+  });
+
+  // Close dropdown when a book link is clicked
+  dropdownLinks.forEach((link) => {
+    link.addEventListener('click', () => {
+      closeDropdown();
+    });
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    const dropdown = document.getElementById('books-dropdown');
+    if (dropdown && !dropdown.contains(e.target as Node)) {
+      closeDropdown();
+    }
   });
 </script>
