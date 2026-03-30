@@ -67,4 +67,31 @@ export const books: Book[] = [
     format: 'Paperback',
     price: '$13.99',
   },
+  {
+    id: 'book-5',
+    title: 'Book Title Five',
+    subtitle: 'Essays on Life',
+    description:
+      'At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident. A deeply personal collection of essays that illuminates the quiet beauty of everyday existence.',
+    coverImage: '/images/book-5-placeholder.jpg',
+    amazonUrl: 'https://www.amazon.com',
+    hasExcerpt: false,
+    publishYear: 2009,
+    format: 'Paperback',
+    price: '$11.99',
+  },
+  {
+    id: 'book-6',
+    title: 'Book Title Six',
+    subtitle: 'A Collection of Poetry',
+    description:
+      'Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. A luminous debut poetry collection that weaves together threads of heritage, longing, and hope.',
+    coverImage: '/images/book-6-placeholder.jpg',
+    amazonUrl: 'https://www.amazon.com',
+    hasExcerpt: true,
+    excerptDescription: 'Read selected poems free',
+    publishYear: 2005,
+    format: 'Hardcover',
+    price: '$18.99',
+  },
 ];
