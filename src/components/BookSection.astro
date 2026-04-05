@@ -18,7 +18,7 @@ const hasBoldInDescription = book.description.includes(boldText);
   id={book.id}
   class:list={[
     'py-24 px-4 sm:px-6',
-    index % 2 === 0 ? 'bg-dark-900' : 'bg-dark-800',
+    index % 2 === 0 ? 'bg-honey-100' : 'bg-honey-200',
   ]}
 >
   <div
@@ -42,36 +42,36 @@ const hasBoldInDescription = book.description.includes(boldText);
 
     <!-- Book info -->
     <div class="flex-1 max-w-xl">
-      <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white mb-2">
+      <h2 class="font-serif text-3xl sm:text-4xl font-bold text-dark-900 mb-2">
         {book.title}
       </h2>
       {book.subtitle && (
-        <p class="text-primary font-serif italic text-lg mb-4">{book.subtitle}</p>
+        <p class="text-honey-800 font-serif italic text-lg mb-4">{book.subtitle}</p>
       )}
       {book.inDevelopment && (
-        <div class="inline-flex items-center gap-2 px-3 py-1.5 mb-4 rounded-full border border-primary/40 bg-primary/10">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 mb-4 rounded-full border border-honey-700/40 bg-honey-700/10">
           <span class="relative flex h-2.5 w-2.5">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-honey-700 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-honey-700"></span>
           </span>
-          <span class="text-primary text-xs font-semibold uppercase tracking-wider">Currently in Development</span>
+          <span class="text-honey-800 text-xs font-semibold uppercase tracking-wider">Currently in Development</span>
         </div>
       )}
       {book.description.includes('\n\n') ? (
         book.description.split('\n\n').map((paragraph: string) => (
-          <p class="text-gray-300 leading-relaxed mb-4">
+          <p class="text-dark-800 leading-relaxed mb-4">
             {hasBoldInDescription && paragraph.includes(boldText) ? (
               <Fragment>
-                {paragraph.split(boldText)[0]}<strong class="text-white">{boldText}</strong>{paragraph.split(boldText)[1]}
+                {paragraph.split(boldText)[0]}<strong class="text-dark-900">{boldText}</strong>{paragraph.split(boldText)[1]}
               </Fragment>
             ) : paragraph}
           </p>
         ))
       ) : (
-        <p class="text-gray-300 leading-relaxed mb-8">
+        <p class="text-dark-800 leading-relaxed mb-8">
           {hasBoldInDescription ? (
             <Fragment>
-              {book.description.split(boldText)[0]}<strong class="text-white">{boldText}</strong>{book.description.split(boldText)[1]}
+              {book.description.split(boldText)[0]}<strong class="text-dark-900">{boldText}</strong>{book.description.split(boldText)[1]}
             </Fragment>
           ) : book.description}
         </p>
@@ -81,7 +81,7 @@ const hasBoldInDescription = book.description.includes(boldText);
         {book.inDevelopment ? (
           <a
             href="#newsletter"
-            class="inline-flex items-center justify-center px-6 py-3 bg-primary text-dark-900 font-semibold uppercase tracking-wider text-sm rounded hover:bg-accent transition-colors duration-200"
+            class="inline-flex items-center justify-center px-6 py-3 bg-honey-700 text-honey-50 font-semibold uppercase tracking-wider text-sm rounded hover:bg-honey-800 transition-colors duration-200"
           >
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -97,8 +97,8 @@ const hasBoldInDescription = book.description.includes(boldText);
               class:list={[
                 'inline-flex items-center justify-center px-6 py-3 font-semibold uppercase tracking-wider text-sm rounded transition-colors duration-200',
                 i === 0
-                  ? 'bg-primary text-dark-900 hover:bg-accent'
-                  : 'border border-primary text-primary hover:bg-primary hover:text-dark-900',
+                  ? 'bg-honey-700 text-honey-50 hover:bg-honey-800'
+                  : 'border border-honey-700 text-honey-800 hover:bg-honey-700 hover:text-honey-50',
               ]}
             >
               <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,7 +111,7 @@ const hasBoldInDescription = book.description.includes(boldText);
 
         {book.hasExcerpt && (
           <button
-            class="excerpt-btn inline-flex items-center justify-center px-6 py-3 border border-primary text-primary font-semibold uppercase tracking-wider text-sm rounded hover:bg-primary hover:text-dark-900 transition-colors duration-200"
+            class="excerpt-btn inline-flex items-center justify-center px-6 py-3 border border-honey-700 text-honey-800 font-semibold uppercase tracking-wider text-sm rounded hover:bg-honey-700 hover:text-honey-50 transition-colors duration-200"
             data-book-id={book.id}
             data-book-title={book.title}
           >
