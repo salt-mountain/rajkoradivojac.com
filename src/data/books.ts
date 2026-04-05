@@ -1,15 +1,18 @@
+export interface BuyLink {
+  store: string;
+  url: string;
+}
+
 export interface Book {
   id: string;
   title: string;
   subtitle?: string;
   description: string;
+  boldInDescription?: string;
   coverImage: string;
-  amazonUrl: string;
+  buyLinks: BuyLink[];
   hasExcerpt: boolean;
   excerptDescription?: string;
-  publishYear: number;
-  format: string;
-  price: string;
   inDevelopment?: boolean;
 }
 
@@ -21,78 +24,67 @@ export const books: Book[] = [
     description:
       'From First Hive to Honey Harvest: An Illustrated, Practical Guide for Beginners is a beginner-friendly beekeeping guide that helps new beekeepers build a strong foundation before expecting their first honey harvest. Drawing on the author\'s firsthand apiary experience, the book offers clear, practical instruction on the essential early stages of beekeeping, including choosing an apiary location, obtaining healthy bees, selecting and preparing hives, understanding colony life, and managing bees through the seasons.\n\nWritten for readers with more questions than answers, the book emphasizes realistic expectations, careful observation, and steady learning rather than quick results. With more than 230 photographs supporting the instruction throughout, it provides an accessible, visually guided path from the first decision to keep bees to the knowledge and habits needed for a successful harvest.',
     coverImage: '/images/book-1-cover.jpg',
-    amazonUrl: 'https://www.amazon.com',
+    buyLinks: [],
     hasExcerpt: false,
-    publishYear: 2025,
-    format: 'Paperback',
-    price: 'TBD',
     inDevelopment: true,
   },
   {
     id: 'book-2',
-    title: 'Book Title Two',
-    subtitle: 'Stories from the Heart',
+    title: 'Pčelarstvo – Ilustrovani priručnik za napredne pčelare',
     description:
-      'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. A masterful collection that explores the depths of human experience.',
+      'Beekeeping – Illustrated Manual for Advanced Beekeepers is a book published in Serbian for beekeepers who already understand the fundamentals of beekeeping and want to deepen their practical knowledge. It presents, in a clear and systematic way, the methods and technologies used in modern beekeeping, with particular attention to the production of all major bee products. Richly illustrated and grounded in real beekeeping practice, the book serves as a reliable guide for experienced beekeepers seeking greater confidence, better results, and a deeper understanding of their craft.',
+    boldInDescription: 'Beekeeping – Illustrated Manual for Advanced Beekeepers',
     coverImage: '/images/book-2-cover.jpg',
-    amazonUrl: 'https://www.amazon.com',
+    buyLinks: [],
     hasExcerpt: true,
     excerptDescription: 'Read a sample chapter free',
-    publishYear: 2018,
-    format: 'Hardcover',
-    price: '$22.99',
   },
   {
     id: 'book-3',
-    title: 'Book Title Three',
+    title: 'How to Say No',
     description:
-      'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. A thought-provoking journey through time and memory.',
+      'How to Say No is a warm and empowering picture book that helps young children understand their feelings, trust their voice, and learn that setting healthy boundaries is both important and appropriate. Through a gentle story and memorable examples, it shows children that saying "no" is not about being unkind, but about self-respect, emotional safety, and confidence. Thoughtfully designed to support early social-emotional learning, the book reflects key NAEYC-aligned values by encouraging emotional literacy, self-advocacy, and meaningful adult-child conversation.',
     coverImage: '/images/book-3-cover.jpg',
-    amazonUrl: 'https://www.amazon.com',
+    buyLinks: [
+      { store: 'Amazon', url: 'https://www.amazon.com/How-Say-No-Children-Boundaries/dp/B0G5Y6F2W7/ref=sr_1_1?crid=28WCM87MWW0W2&dib=eyJ2IjoiMSJ9.ENXcvRIIkjXIfx_OJIUM-BeGUQFemcuAmI5sudAzoILGjHj071QN20LucGBJIEps.cQ0hUuJRsr453Eerg_OqPSY2NWgmSsX' },
+      { store: 'Barnes & Noble', url: 'https://www.barnesandnoble.com/w/how-to-say-no-ray-smart/1148917731?ean=9798218884376' },
+      { store: 'Bookshop', url: 'https://bookshop.org/p/books/how-to-say-no-a-gentle-story-that-helps-children-set-kind-boundaries-and-feel-safe-saying-no/e134bad992e61ba0?ean=9798218884376&next=t' },
+    ],
     hasExcerpt: false,
-    publishYear: 2015,
-    format: 'Paperback',
-    price: '$12.99',
   },
   {
     id: 'book-4',
-    title: 'Book Title Four',
-    subtitle: 'A Memoir',
+    title: 'The Adventure of Ray the Smart Kitten',
     description:
-      'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. An intimate and powerful memoir that resonates with universal truths about family, belonging, and identity.',
+      'The Adventure of Ray the Smart Kitten is an educational picture book for children ages 3–7 about courage, kindness, and the joy of discovery. When Ray, a smart and curious kitten, gets lost in the forest, he meets new friends, faces unexpected challenges, and learns that bravery grows through kindness, trust, and perseverance. With its gentle storytelling and charming illustrations, the book offers young readers a warm adventure that encourages emotional growth, curiosity, and confidence.',
     coverImage: '/images/book-4-cover.jpg',
-    amazonUrl: 'https://www.amazon.com',
+    buyLinks: [
+      { store: 'Amazon', url: 'https://www.amazon.com/gp/product/B0FHF7XS2S?ref_=dbs_m_mng_rwt_calw_tkin_0&storeType=ebooks&qid=1775395852&sr=8-1' },
+    ],
     hasExcerpt: true,
     excerptDescription: 'Read the opening pages free',
-    publishYear: 2012,
-    format: 'Paperback',
-    price: '$13.99',
   },
   {
     id: 'book-5',
-    title: 'Book Title Five',
-    subtitle: 'Essays on Life',
+    title: 'Matica – Osmijeh na licu',
     description:
-      'At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident. A deeply personal collection of essays that illuminates the quiet beauty of everyday existence.',
+      'Matica – Smile on Your Face is a book published in Serbian for beekeepers who want to learn the practical art of queen rearing, both for the needs of their own apiary and for the market. Clear, focused, and richly illustrated with original photographs, it offers a valuable guide to one of the most important and specialized areas of modern beekeeping. Grounded in real practice, the book is designed to help beekeepers build confidence, improve results, and develop the knowledge needed for successful queen production.',
+    boldInDescription: 'Matica – Smile on Your Face',
     coverImage: '/images/book-5-cover.jpg',
-    amazonUrl: 'https://www.amazon.com',
+    buyLinks: [],
     hasExcerpt: false,
-    publishYear: 2009,
-    format: 'Paperback',
-    price: '$11.99',
   },
   {
     id: 'book-6',
-    title: 'Book Title Six',
-    subtitle: 'A Collection of Poetry',
+    title: 'Pčelarstvo – Ilustrovani priručnik za početnike',
     description:
-      'Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. A luminous debut poetry collection that weaves together threads of heritage, longing, and hope.',
+      'Beekeeping – Illustrated Manual for Beginners is a book published in Serbian for those taking their first steps into the world of beekeeping. Designed as a practical introduction to bees, beekeeping equipment, and essential beekeeping work, it gives beginners a clear and accessible foundation for understanding the craft. Richly illustrated with original photographs, the book combines useful guidance with visual clarity, making it a reliable companion for new beekeepers who want to build knowledge, confidence, and good habits from the start.',
+    boldInDescription: 'Beekeeping – Illustrated Manual for Beginners',
     coverImage: '/images/book-6-cover.jpg',
-    amazonUrl: 'https://www.amazon.com',
+    buyLinks: [
+      { store: 'Books2Read', url: 'https://books2read.com/u/bze0Rz' },
+    ],
     hasExcerpt: true,
     excerptDescription: 'Read selected poems free',
-    publishYear: 2005,
-    format: 'Hardcover',
-    price: '$18.99',
   },
 ];
