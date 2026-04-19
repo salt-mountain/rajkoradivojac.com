@@ -6,6 +6,7 @@ export interface Video {
   secondaryTitle?: string;
   type: VideoType;
   customThumbnail?: boolean;
+  noEmbed?: boolean;
 }
 
 export const videos: Video[] = [
@@ -21,6 +22,7 @@ export const videos: Video[] = [
     title: 'Lecture at the Gudovac Fair – Rajko Radivojac: Queen Rearing',
     secondaryTitle: 'RAJKO RADIVOJAC, UZGOJ MATICA',
     type: 'lecture',
+    noEmbed: true,
   },
   {
     id: 'qkJvC9VSWRc',

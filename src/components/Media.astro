@@ -44,13 +44,23 @@ import { videos } from '../data/videos';
 
     <!-- Video grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-start">
-      {videos.map((video) => (
+      {videos.map((video) => {
+        const Trigger = video.noEmbed ? 'a' : 'button';
+        const triggerProps = video.noEmbed
+          ? {
+              href: `https://www.youtube.com/watch?v=${video.id}`,
+              target: '_blank',
+              rel: 'noopener noreferrer',
+            }
+          : { type: 'button' as const };
+        return (
         <article class="media-card" data-type={video.type}>
-          <button
-            type="button"
+          <Trigger
+            {...triggerProps}
             class="video-trigger group block w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
             data-video-id={video.id}
             data-video-title={video.title}
+            data-no-embed={video.noEmbed ? 'true' : undefined}
           >
             <div class="relative aspect-video overflow-hidden rounded-lg bg-navy-800 shadow-lg">
               <img
@@ -87,9 +97,10 @@ import { videos } from '../data/videos';
                 </p>
               )}
             </div>
-          </button>
+          </Trigger>
         </article>
-      ))}
+        );
+      })}
     </div>
   </div>
 </section>
@@ -186,9 +197,10 @@ import { videos } from '../data/videos';
     document.body.style.overflow = '';
   }
 
-  document.querySelectorAll<HTMLButtonElement>('.video-trigger').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const id = btn.dataset.videoId;
+  document.querySelectorAll<HTMLElement>('.video-trigger').forEach((el) => {
+    if (el.dataset.noEmbed === 'true') return;
+    el.addEventListener('click', () => {
+      const id = el.dataset.videoId;
       if (id) openVideo(id);
     });
   });
