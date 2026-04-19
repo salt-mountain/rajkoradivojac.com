@@ -4,9 +4,10 @@ import type { Book } from '../data/books';
 interface Props {
   book: Book;
   index: number;
+  sectionTitle?: string;
 }
 
-const { book, index } = Astro.props;
+const { book, index, sectionTitle } = Astro.props;
 const isEven = index % 2 === 0;
 
 const fullTitle = book.subtitle ? `${book.title}: ${book.subtitle}` : book.title;
@@ -17,10 +18,22 @@ const hasBoldInDescription = book.description.includes(boldText);
 <section
   id={book.id}
   class:list={[
-    'py-24 px-4 sm:px-6',
+    'px-4 sm:px-6',
+    sectionTitle ? 'pt-16 pb-24' : 'py-24',
     index % 2 === 0 ? 'bg-navy-950' : 'bg-navy-900',
   ]}
 >
+  {sectionTitle && (
+    <div class="max-w-6xl mx-auto mb-16 text-center">
+      <div class="flex items-center justify-center gap-4">
+        <span class="h-px w-12 bg-primary/40"></span>
+        <h3 class="text-primary text-xs sm:text-sm font-semibold uppercase tracking-[0.25em]">
+          {sectionTitle}
+        </h3>
+        <span class="h-px w-12 bg-primary/40"></span>
+      </div>
+    </div>
+  )}
   <div
     class:list={[
       'max-w-6xl mx-auto flex flex-col gap-12 items-center',
@@ -78,6 +91,19 @@ const hasBoldInDescription = book.description.includes(boldText);
       )}
 
       <div class="flex flex-wrap gap-4 mt-4">
+        {book.hasExcerpt && (
+          <button
+            class="excerpt-btn inline-flex items-center justify-center px-6 py-3 border border-primary text-primary font-semibold uppercase tracking-wider text-sm rounded hover:bg-primary hover:text-navy-950 transition-colors duration-200"
+            data-book-id={book.id}
+            data-book-title={book.title}
+          >
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            Free Excerpt
+          </button>
+        )}
+
         {book.inDevelopment ? (
           <a
             href="#newsletter"
@@ -107,19 +133,6 @@ const hasBoldInDescription = book.description.includes(boldText);
               {link.store}
             </a>
           ))
-        )}
-
-        {book.hasExcerpt && (
-          <button
-            class="excerpt-btn inline-flex items-center justify-center px-6 py-3 border border-primary text-primary font-semibold uppercase tracking-wider text-sm rounded hover:bg-primary hover:text-navy-950 transition-colors duration-200"
-            data-book-id={book.id}
-            data-book-title={book.title}
-          >
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
-            Free Excerpt
-          </button>
         )}
       </div>
     </div>

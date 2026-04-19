@@ -3,20 +3,36 @@ import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Hero from '../components/Hero.astro';
 import BookSection from '../components/BookSection.astro';
+import Media from '../components/Media.astro';
 import About from '../components/About.astro';
 import Newsletter from '../components/Newsletter.astro';
 import Footer from '../components/Footer.astro';
 import ExcerptModal from '../components/ExcerptModal.astro';
 import { books } from '../data/books';
+
+const beekeepingBooks = books.filter((b) => b.category === 'beekeeping');
+const childrensBooks = books.filter((b) => b.category === 'children');
 ---
 
 <Layout title="Rajko Radivojac — Author">
   <Nav />
   <main>
     <Hero />
-    {books.map((book, index) => (
-      <BookSection book={book} index={index} />
+    {beekeepingBooks.map((book, i) => (
+      <BookSection
+        book={book}
+        index={i}
+        sectionTitle={i === 0 ? 'Beekeeping Books' : undefined}
+      />
     ))}
+    {childrensBooks.map((book, i) => (
+      <BookSection
+        book={book}
+        index={beekeepingBooks.length + i}
+        sectionTitle={i === 0 ? "Children's Books" : undefined}
+      />
+    ))}
+    <Media />
     <About />
     <Newsletter />
   </main>

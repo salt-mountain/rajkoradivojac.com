@@ -1,0 +1,221 @@
+---
+import { videos } from '../data/videos';
+---
+
+<section id="media" class="py-24 px-4 sm:px-6 bg-navy-950">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-4">
+      <div class="flex items-center justify-center gap-4 mb-6">
+        <span class="h-px w-12 bg-primary/40"></span>
+        <h3 class="text-primary text-xs sm:text-sm font-semibold uppercase tracking-[0.25em]">
+          In the Media
+        </h3>
+        <span class="h-px w-12 bg-primary/40"></span>
+      </div>
+      <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white mb-3">
+        Lectures & TV Appearances
+      </h2>
+      <p class="text-gray-400 max-w-2xl mx-auto">
+        A selection of recorded lectures and television features on beekeeping.
+      </p>
+    </div>
+
+    <!-- Filter pills -->
+    <div class="flex flex-wrap justify-center gap-3 mt-10 mb-12">
+      <button
+        class="media-filter is-active inline-flex items-center px-5 py-2 rounded-full border text-xs sm:text-sm font-semibold uppercase tracking-wider transition-colors duration-200"
+        data-filter="all"
+      >
+        All
+      </button>
+      <button
+        class="media-filter inline-flex items-center px-5 py-2 rounded-full border text-xs sm:text-sm font-semibold uppercase tracking-wider transition-colors duration-200"
+        data-filter="lecture"
+      >
+        Lectures
+      </button>
+      <button
+        class="media-filter inline-flex items-center px-5 py-2 rounded-full border text-xs sm:text-sm font-semibold uppercase tracking-wider transition-colors duration-200"
+        data-filter="tv"
+      >
+        TV Appearances
+      </button>
+    </div>
+
+    <!-- Video grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-start">
+      {videos.map((video) => (
+        <article class="media-card" data-type={video.type}>
+          <button
+            type="button"
+            class="video-trigger group block w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
+            data-video-id={video.id}
+            data-video-title={video.title}
+          >
+            <div class="relative aspect-video overflow-hidden rounded-lg bg-navy-800 shadow-lg">
+              <img
+                src={video.customThumbnail
+                  ? `/images/video-thumbs/${video.id}.jpg`
+                  : `https://i.ytimg.com/vi/${video.id}/maxresdefault.jpg`}
+                data-fallback={video.customThumbnail
+                  ? undefined
+                  : `https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`}
+                alt=""
+                loading="lazy"
+                class="yt-thumb w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-navy-950/70 via-transparent to-transparent"></div>
+              <div class="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-200"></div>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="w-16 h-16 rounded-full bg-primary/90 group-hover:bg-primary flex items-center justify-center shadow-xl transition-transform duration-200 group-hover:scale-110">
+                  <svg class="w-7 h-7 text-navy-950 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </div>
+              </div>
+              <span class="absolute top-3 left-3 px-2.5 py-1 rounded bg-navy-950/85 text-primary text-[10px] font-semibold uppercase tracking-widest">
+                {video.type === 'lecture' ? 'Lecture' : 'TV'}
+              </span>
+            </div>
+            <div class="mt-4">
+              <h3 class="font-serif text-lg font-semibold text-white group-hover:text-primary transition-colors duration-200 leading-snug">
+                {video.title}
+              </h3>
+              {video.secondaryTitle && (
+                <p class="text-sm text-gray-400 italic mt-1 leading-snug">
+                  {video.secondaryTitle}
+                </p>
+              )}
+            </div>
+          </button>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- Video lightbox modal -->
+<div
+  id="video-modal"
+  class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/90 backdrop-blur-sm p-4 sm:p-8"
+>
+  <div class="relative w-full max-w-5xl">
+    <button
+      id="video-modal-close"
+      class="absolute -top-11 right-0 text-gray-300 hover:text-primary transition-colors flex items-center gap-2 text-sm"
+      aria-label="Close video"
+    >
+      <span class="uppercase tracking-wider">Close</span>
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+    <div class="relative aspect-video bg-black rounded-lg overflow-hidden shadow-2xl">
+      <iframe
+        id="video-iframe"
+        class="w-full h-full"
+        src=""
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen
+      ></iframe>
+    </div>
+    <a
+      id="video-modal-yt"
+      href="#"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="inline-flex items-center gap-1.5 mt-4 text-sm text-gray-400 hover:text-primary transition-colors"
+    >
+      Watch on YouTube
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+      </svg>
+    </a>
+  </div>
+</div>
+
+<style>
+  .media-filter {
+    border-color: var(--color-navy-600);
+    color: #9CA3AF; /* gray-400 */
+  }
+  .media-filter:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+  .media-filter.is-active {
+    background-color: var(--color-primary);
+    color: var(--color-navy-950);
+    border-color: transparent;
+  }
+</style>
+
+<script>
+  // maxresdefault.jpg doesn't exist for every video; on 404 fall back to hqdefault.jpg.
+  document.querySelectorAll<HTMLImageElement>('img.yt-thumb').forEach((img) => {
+    img.addEventListener('error', () => {
+      const fallback = img.dataset.fallback;
+      if (fallback && img.src !== fallback) {
+        img.src = fallback;
+      }
+    }, { once: true });
+  });
+
+  // Lightbox modal
+  const modal = document.getElementById('video-modal');
+  const iframe = document.getElementById('video-iframe') as HTMLIFrameElement | null;
+  const closeBtn = document.getElementById('video-modal-close');
+  const ytLink = document.getElementById('video-modal-yt') as HTMLAnchorElement | null;
+
+  function openVideo(id: string) {
+    if (!modal || !iframe) return;
+    iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;
+    if (ytLink) ytLink.href = `https://www.youtube.com/watch?v=${id}`;
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeVideo() {
+    if (!modal || !iframe) return;
+    iframe.src = '';
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll<HTMLButtonElement>('.video-trigger').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.videoId;
+      if (id) openVideo(id);
+    });
+  });
+
+  closeBtn?.addEventListener('click', closeVideo);
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) closeVideo();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal?.classList.contains('hidden')) closeVideo();
+  });
+
+  // Filter pills
+  const filters = document.querySelectorAll<HTMLButtonElement>('.media-filter');
+  const cards = document.querySelectorAll<HTMLElement>('.media-card');
+  filters.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter;
+      filters.forEach((b) => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      cards.forEach((card) => {
+        if (filter === 'all' || card.dataset.type === filter) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    });
+  });
+</script>
