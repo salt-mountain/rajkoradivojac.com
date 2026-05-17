@@ -3,6 +3,7 @@ import { books } from '../data/books';
 
 const beekeepingBooks = books.filter((b) => b.category === 'beekeeping');
 const childrensBooks = books.filter((b) => b.category === 'children');
+const coloringBooks = books.filter((b) => b.category === 'coloring');
 ---
 
 <nav
@@ -72,6 +73,18 @@ const childrensBooks = books.filter((b) => b.category === 'children');
                 {book.title}
               </a>
             ))}
+            <div class="my-2 border-t border-navy-600"></div>
+            <div class="px-4 pt-1 pb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary/80">
+              Cozy Coloring Books
+            </div>
+            {coloringBooks.map((book) => (
+              <a
+                href={`#${book.id}`}
+                class="books-dropdown-link block px-4 py-2 text-sm text-gray-400 hover:text-primary hover:bg-navy-700 transition-colors duration-200"
+              >
+                {book.title}
+              </a>
+            ))}
           </div>
         </div>
 
@@ -114,6 +127,17 @@ const childrensBooks = books.filter((b) => b.category === 'children');
           Children's Books
         </div>
         {childrensBooks.map((book) => (
+          <a
+            href={`#${book.id}`}
+            class="mobile-nav-link text-sm uppercase tracking-wider text-gray-400 hover:text-primary transition-colors duration-200"
+          >
+            {book.title}
+          </a>
+        ))}
+        <div class="pt-2 border-t border-navy-700 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary/80">
+          Cozy Coloring Books
+        </div>
+        {coloringBooks.map((book) => (
           <a
             href={`#${book.id}`}
             class="mobile-nav-link text-sm uppercase tracking-wider text-gray-400 hover:text-primary transition-colors duration-200"

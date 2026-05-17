@@ -71,15 +71,26 @@ const hasBoldInDescription = book.description.includes(boldText);
         </div>
       )}
       {book.description.includes('\n\n') ? (
-        book.description.split('\n\n').map((paragraph: string) => (
-          <p class="text-gray-300 leading-relaxed mb-4">
-            {hasBoldInDescription && paragraph.includes(boldText) ? (
-              <Fragment>
-                {paragraph.split(boldText)[0]}<strong class="text-white">{boldText}</strong>{paragraph.split(boldText)[1]}
-              </Fragment>
-            ) : paragraph}
-          </p>
-        ))
+        book.description.split('\n\n').map((paragraph: string) => {
+          const lines = paragraph.split('\n');
+          const isList = lines.length > 1 && lines.every((l) => l.startsWith('- '));
+          if (isList) {
+            return (
+              <ul class="list-disc list-outside pl-5 text-gray-300 leading-relaxed mb-4 space-y-1">
+                {lines.map((l) => <li>{l.slice(2)}</li>)}
+              </ul>
+            );
+          }
+          return (
+            <p class="text-gray-300 leading-relaxed mb-4">
+              {hasBoldInDescription && paragraph.includes(boldText) ? (
+                <Fragment>
+                  {paragraph.split(boldText)[0]}<strong class="text-white">{boldText}</strong>{paragraph.split(boldText)[1]}
+                </Fragment>
+              ) : paragraph}
+            </p>
+          );
+        })
       ) : (
         <p class="text-gray-300 leading-relaxed mb-8">
           {hasBoldInDescription ? (

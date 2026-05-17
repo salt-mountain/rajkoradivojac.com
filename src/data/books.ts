@@ -3,7 +3,7 @@ export interface BuyLink {
   url: string;
 }
 
-export type BookCategory = 'beekeeping' | 'children';
+export type BookCategory = 'beekeeping' | 'children' | 'coloring';
 
 export interface Book {
   id: string;
@@ -97,5 +97,18 @@ export const books: Book[] = [
     ],
     hasExcerpt: true,
     excerptDescription: 'Read the opening pages free',
+  },
+  {
+    id: 'book-7',
+    title: 'Cozy Keys to Every Room',
+    description:
+      'Unlock a world of peaceful, cozy spaces with Cozy Keys to Every Room, a relaxing coloring book for adults filled with charming rooms, decorative keys, floral details, and warm little scenes waiting to be brought to life.\n\nEach page invites you to step through a magical keyhole into a different cozy room, from quiet reading corners and dreamy bedrooms to creative studios, kitchens, gardens, and peaceful retreats. With a mix of detailed line art, elegant keys, hearts, flowers, vines, and comforting interiors, this book is designed for slow, calming coloring and creative relaxation.\n\nInside you will find:\n\n- Beautiful cozy room illustrations\n- Decorative vintage keys and keyhole-inspired designs\n- Floral borders, hearts, vines, stars, and charming details\n- Single-sided coloring pages to help reduce bleed-through\n- A color testing page to try your pencils, markers, and pens\n- Blank backing pages to help protect the next illustration\n\nThis coloring book is perfect for adults who enjoy cozy interiors, whimsical details, cottagecore-inspired art, decorative keys, floral designs, and relaxing creative time.\n\nWhether you color for stress relief, mindfulness, or simple enjoyment, Cozy Keys to Every Room offers a gentle escape into a charming world where every key opens the door to a new cozy place.',
+    coverImage: '/images/book-7-cover.jpg',
+    category: 'coloring',
+    buyLinks: [
+      { store: 'Amazon', url: 'https://www.amazon.com/dp/B0H119B3MM' },
+    ],
+    hasExcerpt: true,
+    excerptDescription: 'Preview sample pages free',
   },
 ];

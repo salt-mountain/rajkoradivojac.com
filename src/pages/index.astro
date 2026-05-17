@@ -12,6 +12,7 @@ import { books } from '../data/books';
 
 const beekeepingBooks = books.filter((b) => b.category === 'beekeeping');
 const childrensBooks = books.filter((b) => b.category === 'children');
+const coloringBooks = books.filter((b) => b.category === 'coloring');
 ---
 
 <Layout title="Rajko Radivojac — Author">
@@ -30,6 +31,13 @@ const childrensBooks = books.filter((b) => b.category === 'children');
         book={book}
         index={beekeepingBooks.length + i}
         sectionTitle={i === 0 ? "Children's Books" : undefined}
+      />
+    ))}
+    {coloringBooks.map((book, i) => (
+      <BookSection
+        book={book}
+        index={beekeepingBooks.length + childrensBooks.length + i}
+        sectionTitle={i === 0 ? 'Cozy Coloring Books' : undefined}
       />
     ))}
     <Media />
