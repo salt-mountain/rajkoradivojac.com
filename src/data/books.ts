@@ -34,10 +34,10 @@ export const books: Book[] = [
   },
   {
     id: 'book-8',
-    title: 'Beekeeping Journal: A Practical Record Book for 12 Hives',
-    subtitle: 'Keep clear, organized records for up to 12 beehives throughout the season.',
+    title: 'Beekeeping Journal',
+    subtitle: 'A Practical Record Book for 12 Hives',
     description:
-      'This practical beekeeping journal helps beginner and hobby beekeepers track the most important details of hive management in one simple place. With dedicated record pages for each hive, it makes it easier to document inspections, queen activity, brood pattern, colony strength, food stores, feeding, pest and disease concerns, varroa checks, treatments, harvest notes, and end-of-season observations.\n\nThe clean, easy-to-use layout is designed to help you compare hive performance, notice patterns over time, and make better beekeeping decisions throughout the year.\n\nPerfect for new beekeepers, small apiaries, and anyone who wants a simple, reliable record book for managing up to 12 hives.',
+      'Keep clear, organized records for up to 12 beehives throughout the season.\n\nThis practical beekeeping journal helps beginner and hobby beekeepers track the most important details of hive management in one simple place. With dedicated record pages for each hive, it makes it easier to document inspections, queen activity, brood pattern, colony strength, food stores, feeding, pest and disease concerns, varroa checks, treatments, harvest notes, and end-of-season observations.\n\nThe clean, easy-to-use layout is designed to help you compare hive performance, notice patterns over time, and make better beekeeping decisions throughout the year.\n\nPerfect for new beekeepers, small apiaries, and anyone who wants a simple, reliable record book for managing up to 12 hives.',
     coverImage: '/images/book-8-cover.jpg',
     category: 'beekeeping',
     buyLinks: [
