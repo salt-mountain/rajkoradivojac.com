@@ -33,6 +33,20 @@ export const books: Book[] = [
     inDevelopment: true,
   },
   {
+    id: 'book-8',
+    title: 'Beekeeping Journal: A Practical Record Book for 12 Hives',
+    subtitle: 'Keep clear, organized records for up to 12 beehives throughout the season.',
+    description:
+      'This practical beekeeping journal helps beginner and hobby beekeepers track the most important details of hive management in one simple place. With dedicated record pages for each hive, it makes it easier to document inspections, queen activity, brood pattern, colony strength, food stores, feeding, pest and disease concerns, varroa checks, treatments, harvest notes, and end-of-season observations.\n\nThe clean, easy-to-use layout is designed to help you compare hive performance, notice patterns over time, and make better beekeeping decisions throughout the year.\n\nPerfect for new beekeepers, small apiaries, and anyone who wants a simple, reliable record book for managing up to 12 hives.',
+    coverImage: '/images/book-8-cover.jpg',
+    category: 'beekeeping',
+    buyLinks: [
+      { store: 'Amazon', url: 'https://www.amazon.com/dp/B0GZB82GP8' },
+    ],
+    hasExcerpt: true,
+    excerptDescription: 'Preview sample pages free',
+  },
+  {
     id: 'book-2',
     title: 'Pčelarstvo – Ilustrovani priručnik za napredne pčelare',
     description:
