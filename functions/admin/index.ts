@@ -7,10 +7,19 @@ import { requireAdmin } from '../_lib/admin-auth';
 export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   const auth = requireAdmin(request, env);
   if (auth instanceof Response) {
-    return new Response('Forbidden — this page requires admin access.', {
-      status: 403,
-      headers: { 'Content-Type': 'text/plain' },
-    });
+    const cfAccess = [...request.headers.keys()].filter((k) =>
+      k.toLowerCase().startsWith('cf-access'),
+    );
+    const email = request.headers.get('Cf-Access-Authenticated-User-Email') ?? '(absent)';
+    const jwt = request.headers.get('Cf-Access-Jwt-Assertion') ? 'present' : 'absent';
+    return new Response(
+      'Forbidden - admin access required.\n\n' +
+        'DEBUG (temporary):\n' +
+        `Cf-Access-Authenticated-User-Email: ${email}\n` +
+        `Cf-Access-Jwt-Assertion: ${jwt}\n` +
+        `cf-access-* headers: ${cfAccess.join(', ') || '(none)'}\n`,
+      { status: 403, headers: { 'Content-Type': 'text/plain; charset=utf-8' } },
+    );
   }
   return new Response(html(auth.email), {
     headers: { 'Content-Type': 'text/html; charset=utf-8' },
