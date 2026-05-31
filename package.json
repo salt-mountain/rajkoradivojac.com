@@ -9,11 +9,18 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "vitest run",
+    "typecheck:functions": "tsc -p functions/tsconfig.json"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.0",
     "astro": "6.4.2",
+    "aws4fetch": "^1.0.20",
     "tailwindcss": "4.3.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260531.1",
+    "vitest": "^4.1.7"
   }
 }

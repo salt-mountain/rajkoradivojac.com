@@ -11,8 +11,7 @@
       content. Be the first to know when a new book is on the way.
     </p>
 
-    <!-- Newsletter form (placeholder - will be replaced with email provider embed) -->
-    <form id="newsletter-form" class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+    <form id="newsletter-form" class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto" novalidate>
       <input
         type="email"
         name="email"
@@ -20,14 +19,25 @@
         class="flex-1 px-4 py-3 bg-navy-800 border border-navy-600 rounded text-white placeholder-gray-500 focus:outline-none focus:border-primary transition-colors"
         placeholder="your@email.com"
       />
+      <!-- Honeypot -->
+      <input
+        type="text"
+        name="website"
+        tabindex="-1"
+        autocomplete="off"
+        aria-hidden="true"
+        style="position:absolute;left:-9999px"
+      />
       <button
+        id="newsletter-submit"
         type="submit"
-        class="px-8 py-3 bg-primary text-navy-950 font-semibold uppercase tracking-wider text-sm rounded hover:bg-accent transition-colors duration-200 whitespace-nowrap"
+        class="px-8 py-3 bg-primary text-navy-950 font-semibold uppercase tracking-wider text-sm rounded hover:bg-accent transition-colors duration-200 whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
       >
         Subscribe
       </button>
     </form>
-    <p class="text-xs text-gray-500 mt-4">
+    <p id="newsletter-message" class="text-sm mt-4 hidden"></p>
+    <p id="newsletter-privacy" class="text-xs text-gray-500 mt-4">
       We respect your privacy. Unsubscribe anytime.
     </p>
 
@@ -46,3 +56,46 @@
     </div>
   </div>
 </section>
+
+<script>
+  const form = document.getElementById('newsletter-form') as HTMLFormElement | null;
+  const message = document.getElementById('newsletter-message');
+  const submitBtn = document.getElementById('newsletter-submit') as HTMLButtonElement | null;
+
+  function show(text: string, ok: boolean) {
+    if (!message) return;
+    message.textContent = text;
+    message.classList.remove('hidden', 'text-green-400', 'text-red-400');
+    message.classList.add(ok ? 'text-green-400' : 'text-red-400');
+  }
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!form) return;
+
+    const data = new FormData(form);
+    const email = String(data.get('email') ?? '').trim();
+    const website = String(data.get('website') ?? '');
+    if (!email) {
+      show('Please enter your email.', false);
+      return;
+    }
+
+    if (submitBtn) submitBtn.disabled = true;
+    try {
+      // No book_slug -> general newsletter signup (double opt-in, no excerpt).
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, website }),
+      });
+      if (res.status >= 500) throw new Error('server');
+      form.reset();
+      show("Almost there! Check your inbox for a confirmation link.", true);
+    } catch {
+      show('Something went wrong. Please try again in a moment.', false);
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
+    }
+  });
+</script>
