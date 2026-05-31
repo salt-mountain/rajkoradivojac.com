@@ -1,0 +1,31 @@
+name = "rajkoradivojac-com"
+compatibility_date = "2025-01-01"
+pages_build_output_dir = "dist"
+
+# D1: subscribers, excerpt requests, broadcasts, rate limits, SES events.
+# database_id is filled in after `wrangler d1 create rajko-newsletter`.
+[[d1_databases]]
+binding = "DB"
+database_name = "rajko-newsletter"
+database_id = "7aa15a0d-5005-4c2f-b545-dd49c554a811"
+migrations_dir = "migrations"
+
+# R2: book excerpt PDFs under excerpts/{book-slug}.pdf. Enabled in Phase 2 once the
+# bucket exists (creation needs the `r2` Wrangler scope). Kept commented so Phase 1
+# deploys without requiring the bucket.
+# [[r2_buckets]]
+# binding = "EXCERPTS"
+# bucket_name = "rajko-excerpts"
+
+[vars]
+SITE_URL = "https://rajkoradivojac.com"
+FROM_EMAIL = "noreply@rajkoradivojac.com"   # must be on the SES-verified domain
+FROM_NAME = "Rajko Radivojac"
+SES_REGION = "us-east-1"
+SES_CONFIGURATION_SET = "rajko-mail"
+MAILING_ADDRESS = "PLACEHOLDER — set before launch (CAN-SPAM physical address)"
+
+# Secrets (set via `wrangler pages secret put`, never committed):
+#   AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY   (RajkoEmailSender — already set)
+#   HMAC_SECRET                                 (openssl rand -hex 32)
+#   R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY  (S3 presigning, Phase 2)

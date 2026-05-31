@@ -26,4 +26,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy ./dist --project-name rajkoradivojac-com
+          # Reads wrangler.toml: project name, pages_build_output_dir (dist),
+          # Functions, D1/vars bindings. Don't pass a dir arg alongside
+          # pages_build_output_dir — wrangler errors on both.
+          command: pages deploy

@@ -1,0 +1,127 @@
+import type { Env } from '../_lib/types';
+import { validateEmail, normalizeEmail } from '../_lib/validation';
+import { checkRateLimit } from '../_lib/rate-limit';
+import {
+  getActiveBook,
+  getSubscriberByEmail,
+  insertSubscriber,
+  setSubscriberName,
+  hasRecentSend,
+  insertExcerptRequest,
+} from '../_lib/db';
+import { signActionToken, generateUnsubscribeToken, SEVEN_DAYS_SECONDS } from '../_lib/tokens';
+import { sendEmail } from '../_lib/email';
+import { confirmationEmail } from '../_lib/templates';
+
+interface SubscribeBody {
+  email?: string;
+  book_slug?: string;
+  name?: string;
+  // Honeypot — the form field is named "website"; accept either key.
+  website?: string;
+  honeypot?: string;
+}
+
+// Public response is ALWAYS this, so subscriber state can't be enumerated.
+const ok = () => Response.json({ status: 'ok' });
+const clientError = (error: string, status = 400) =>
+  new Response(JSON.stringify({ error }), {
+    status,
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
+  let body: SubscribeBody;
+  try {
+    body = await request.json<SubscribeBody>();
+  } catch {
+    return clientError('bad_request');
+  }
+
+  // Honeypot: a bot filled the hidden field. Pretend success.
+  if (body.website?.trim() || body.honeypot?.trim()) return ok();
+
+  const email = normalizeEmail(body.email ?? '');
+  if (!validateEmail(email)) return clientError('invalid_email');
+
+  const ip = request.headers.get('CF-Connecting-IP') ?? 'unknown';
+  const userAgent = request.headers.get('User-Agent');
+
+  if (!(await checkRateLimit(env.DB, ip, 'subscribe'))) {
+    return clientError('rate_limited', 429);
+  }
+
+  // Optional book. If a slug is given it must be a known active book.
+  const bookSlug = body.book_slug?.trim() || null;
+  let bookTitle: string | null = null;
+  if (bookSlug) {
+    const book = await getActiveBook(env, bookSlug);
+    if (!book) return clientError('unknown_book');
+    bookTitle = book.title;
+  }
+
+  const name = body.name?.trim() || null;
+
+  // Upsert the subscriber (one row per email).
+  let sub = await getSubscriberByEmail(env, email);
+  if (!sub) {
+    sub = await insertSubscriber(env, {
+      email,
+      name,
+      unsubscribeToken: generateUnsubscribeToken(),
+      sourceBook: bookSlug,
+      ip,
+      userAgent,
+    });
+  } else if (name && !sub.name) {
+    await setSubscriberName(env, sub.id, name);
+  }
+
+  // Idempotency: same book sent within 7 days -> no duplicate.
+  if (bookSlug && (await hasRecentSend(env, sub.id, bookSlug))) return ok();
+
+  // --- Branch on subscriber state ---
+
+  if (sub.unsubscribed_at) {
+    // Phase 3: send a "welcome back — confirm resubscribe" email. Never silently
+    // resubscribe. For Phase 1 (no unsubscribe endpoint yet) this is unreachable.
+    return ok();
+  }
+
+  if (sub.confirmed_at) {
+    // Already confirmed. Phase 2 will send the excerpt immediately here and mark it
+    // sent. For Phase 1 we just record the (confirmed) request.
+    if (bookSlug) await insertExcerptRequest(env, sub.id, bookSlug, 'confirmed');
+    return ok();
+  }
+
+  // Not yet confirmed -> double opt-in. Record a pending request (if a book) and
+  // send the confirmation email.
+  if (bookSlug) await insertExcerptRequest(env, sub.id, bookSlug, 'pending');
+
+  const exp = Math.floor(Date.now() / 1000) + SEVEN_DAYS_SECONDS;
+  const token = await signActionToken(
+    { action: 'confirm', sid: sub.id, book: bookSlug, exp },
+    env.HMAC_SECRET,
+  );
+  const confirmUrl = `${env.SITE_URL}/api/confirm?token=${encodeURIComponent(token)}`;
+  const unsubscribeUrl = `${env.SITE_URL}/api/unsubscribe?token=${sub.unsubscribe_token}`;
+
+  const tmpl = confirmationEmail({
+    fromName: env.FROM_NAME,
+    bookTitle,
+    confirmUrl,
+    unsubscribeUrl,
+    mailingAddress: env.MAILING_ADDRESS,
+  });
+
+  await sendEmail(env, {
+    to: email,
+    subject: tmpl.subject,
+    html: tmpl.html,
+    text: tmpl.text,
+    unsubscribeUrl,
+  });
+
+  return ok();
+};
