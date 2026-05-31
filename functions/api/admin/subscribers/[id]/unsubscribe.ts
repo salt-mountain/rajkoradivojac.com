@@ -4,7 +4,7 @@ import { unsubscribeById } from '../../../../_lib/db';
 
 // POST /api/admin/subscribers/:id/unsubscribe — soft unsubscribe (keeps the record)
 export const onRequestPost: PagesFunction<Env, 'id'> = async ({ request, env, params }) => {
-  const auth = requireAdmin(request, env);
+  const auth = await requireAdmin(request, env);
   if (auth instanceof Response) return auth;
 
   const id = Number(params.id);

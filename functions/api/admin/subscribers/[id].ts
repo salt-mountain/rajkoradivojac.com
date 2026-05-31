@@ -4,7 +4,7 @@ import { getSubscriberWithRequests, deleteSubscriber } from '../../../_lib/db';
 
 // GET /api/admin/subscribers/:id — full detail + excerpt requests
 export const onRequestGet: PagesFunction<Env, 'id'> = async ({ request, env, params }) => {
-  const auth = requireAdmin(request, env);
+  const auth = await requireAdmin(request, env);
   if (auth instanceof Response) return auth;
 
   const id = Number(params.id);
@@ -17,7 +17,7 @@ export const onRequestGet: PagesFunction<Env, 'id'> = async ({ request, env, par
 
 // DELETE /api/admin/subscribers/:id — hard delete (GDPR erase)
 export const onRequestDelete: PagesFunction<Env, 'id'> = async ({ request, env, params }) => {
-  const auth = requireAdmin(request, env);
+  const auth = await requireAdmin(request, env);
   if (auth instanceof Response) return auth;
 
   const id = Number(params.id);

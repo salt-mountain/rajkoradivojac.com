@@ -14,8 +14,13 @@ export interface Env {
   SES_CONFIGURATION_SET: string;
   MAILING_ADDRESS: string;
 
+  // Cloudflare Access JWT verification for /admin + /api/admin/*.
+  // ACCESS_TEAM_DOMAIN e.g. "yourteam.cloudflareaccess.com"; ACCESS_AUD = the Access
+  // application's Audience (AUD) tag.
+  ACCESS_TEAM_DOMAIN?: string;
+  ACCESS_AUD?: string;
   // Optional comma-separated allowlist of admin emails (defense-in-depth on top of
-  // the Cloudflare Access policy that actually gates /admin + /api/admin/*).
+  // the Cloudflare Access policy).
   ADMIN_EMAILS?: string;
 
   // secrets (wrangler pages secret put)

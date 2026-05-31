@@ -9,7 +9,7 @@ function cell(v: unknown): string {
 
 // GET /api/admin/export.csv — full subscriber list as CSV
 export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
-  const auth = requireAdmin(request, env);
+  const auth = await requireAdmin(request, env);
   if (auth instanceof Response) return auth;
 
   const { rows } = await listSubscribers(env, {

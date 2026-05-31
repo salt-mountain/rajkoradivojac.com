@@ -4,7 +4,7 @@ import { statsSummary } from '../../_lib/db';
 
 // GET /api/admin/stats
 export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
-  const auth = requireAdmin(request, env);
+  const auth = await requireAdmin(request, env);
   if (auth instanceof Response) return auth;
   return Response.json(await statsSummary(env));
 };
