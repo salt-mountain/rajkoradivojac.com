@@ -132,6 +132,38 @@ export async function unsubscribeById(env: Env, id: number): Promise<void> {
     .run();
 }
 
+// ---------------------------------------------------------------------------
+// SES event ingestion (Phase 6)
+// ---------------------------------------------------------------------------
+
+export async function insertSesEvent(
+  env: Env,
+  e: {
+    eventType: string;
+    email: string;
+    messageId: string | null;
+    reason: string | null;
+    raw: string | null;
+  },
+): Promise<void> {
+  await env.DB.prepare(
+    `INSERT INTO ses_events (event_type, email, message_id, reason, raw_json)
+     VALUES (?, ?, ?, ?, ?)`,
+  )
+    .bind(e.eventType, e.email, e.messageId, e.reason, e.raw)
+    .run();
+}
+
+/** Auto-suppress an address (hard bounce / complaint). Idempotent. */
+export async function suppressEmail(env: Env, email: string): Promise<void> {
+  await env.DB.prepare(
+    `UPDATE subscribers SET unsubscribed_at = datetime('now')
+     WHERE email = ? AND unsubscribed_at IS NULL`,
+  )
+    .bind(email)
+    .run();
+}
+
 export async function getActiveBook(env: Env, slug: string): Promise<BookRow | null> {
   return env.DB.prepare(
     'SELECT slug, title, excerpt_pdf_key, active FROM books WHERE slug = ? AND active = 1',
