@@ -23,7 +23,8 @@ FROM_EMAIL = "noreply@rajkoradivojac.com"   # must be on the SES-verified domain
 FROM_NAME = "Rajko Radivojac"
 SES_REGION = "us-east-1"
 SES_CONFIGURATION_SET = "rajko-mail"
-MAILING_ADDRESS = "PLACEHOLDER — set before launch (CAN-SPAM physical address)"
+MAILING_ADDRESS = ""   # empty -> footer omits the address line. MUST set a real physical
+                       # postal address (CAN-SPAM) before enabling broadcasts (Phase 5).
 
 # Secrets (set via `wrangler pages secret put`, never committed):
 #   AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY   (RajkoEmailSender — already set)
