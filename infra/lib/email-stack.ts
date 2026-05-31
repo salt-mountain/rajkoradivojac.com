@@ -3,6 +3,8 @@ import { Construct } from 'constructs';
 import * as ses from 'aws-cdk-lib/aws-ses';
 import * as sns from 'aws-cdk-lib/aws-sns';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
+import * as cwActions from 'aws-cdk-lib/aws-cloudwatch-actions';
 
 export interface EmailStackProps extends cdk.StackProps {
   /** Apex domain to verify as a sending identity, e.g. `rajkoradivojac.com`. */
@@ -107,6 +109,69 @@ export class EmailStack extends cdk.Stack {
       }),
     );
 
+    // --- Alerting (CloudWatch alarms -> SNS -> email) ---------------------
+    // The alert email is NOT in code: subscribe it to this topic once after deploy
+    // (see CfnOutput AlertsTopicArn). Alarms fire once on breach + once on recovery.
+    const alertsTopic = new sns.Topic(this, 'SesAlertsTopic', {
+      topicName: 'ses-alerts',
+      displayName: 'SES Alerts (rajkoradivojac.com)',
+    });
+    const alarmAction = new cwActions.SnsAction(alertsTopic);
+
+    const sesAlarm = (
+      id: string,
+      opts: {
+        alarmName: string;
+        description: string;
+        metricName: string;
+        statistic: string;
+        period: cdk.Duration;
+        threshold: number;
+      },
+    ) => {
+      const alarm = new cloudwatch.Alarm(this, id, {
+        alarmName: opts.alarmName,
+        alarmDescription: opts.description,
+        metric: new cloudwatch.Metric({
+          namespace: 'AWS/SES',
+          metricName: opts.metricName,
+          statistic: opts.statistic,
+          period: opts.period,
+        }),
+        threshold: opts.threshold,
+        evaluationPeriods: 1,
+        comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+        treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+      });
+      alarm.addAlarmAction(alarmAction);
+      return alarm;
+    };
+
+    sesAlarm('ComplaintRateAlarm', {
+      alarmName: 'rajko-ses-complaint-rate',
+      description: 'SES complaint rate above 0.1% — risk of SES sending suspension.',
+      metricName: 'Reputation.ComplaintRate',
+      statistic: 'Average',
+      period: cdk.Duration.hours(1),
+      threshold: 0.001,
+    });
+    sesAlarm('BounceRateAlarm', {
+      alarmName: 'rajko-ses-bounce-rate',
+      description: 'SES bounce rate above 5% — risk of SES sending suspension.',
+      metricName: 'Reputation.BounceRate',
+      statistic: 'Average',
+      period: cdk.Duration.hours(1),
+      threshold: 0.05,
+    });
+    sesAlarm('SendVolumeAlarm', {
+      alarmName: 'rajko-ses-daily-send-volume',
+      description: 'SES sent more than 200 emails in a day — possible sender-key misuse.',
+      metricName: 'Send',
+      statistic: 'Sum',
+      period: cdk.Duration.days(1),
+      threshold: 200,
+    });
+
     // --- Outputs ----------------------------------------------------------
     const out = (id: string, value: string, description: string) =>
       new cdk.CfnOutput(this, id, { value, description });
@@ -128,6 +193,7 @@ export class EmailStack extends cdk.Stack {
     out('SesRegion', this.region, 'SES region');
     out('BouncesTopicArn', bouncesTopic.topicArn, 'SNS topic ARN for bounces');
     out('ComplaintsTopicArn', complaintsTopic.topicArn, 'SNS topic ARN for complaints');
+    out('AlertsTopicArn', alertsTopic.topicArn, 'SNS topic for CloudWatch SES alarms — subscribe your alert email here');
     out('SenderUserArn', senderUser.userArn, 'IAM sender user ARN');
     out('SenderUserName', senderUser.userName, 'IAM sender user name');
     out('ConfigurationSetName', configSet.configurationSetName, 'SES configuration set');
