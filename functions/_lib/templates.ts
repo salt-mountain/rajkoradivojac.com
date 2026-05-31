@@ -33,7 +33,11 @@ function layout(opts: {
           </td></tr>
           <tr><td style="padding:20px 40px;border-top:1px solid #e5e7eb;font-size:12px;color:#6b7280;line-height:1.6;">
             You received this email because it was requested at rajkoradivojac.com.<br>
-            <a href="${opts.unsubscribeUrl}" style="color:#6b7280;">Unsubscribe</a> &nbsp;&middot;&nbsp; ${escapeHtml(opts.mailingAddress)}
+            <a href="${opts.unsubscribeUrl}" style="color:#6b7280;">Unsubscribe</a>${
+              opts.mailingAddress.trim()
+                ? ` &nbsp;&middot;&nbsp; ${escapeHtml(opts.mailingAddress)}`
+                : ''
+            }
           </td></tr>
         </table>
       </td></tr>
@@ -85,7 +89,7 @@ export function confirmationEmail(opts: {
     `This link expires in 7 days. If you didn't request this, you can ignore this email.`,
     ``,
     `Unsubscribe: ${unsubscribeUrl}`,
-    mailingAddress,
+    ...(mailingAddress.trim() ? [mailingAddress] : []),
   ].join('\n');
 
   return { subject, html: layout({ fromName, bodyHtml, unsubscribeUrl, mailingAddress }), text };
@@ -135,7 +139,7 @@ export function resubscribeEmail(opts: {
     `This link expires in 7 days. If you didn't request this, ignore this email and you'll stay unsubscribed.`,
     ``,
     `Unsubscribe: ${unsubscribeUrl}`,
-    mailingAddress,
+    ...(mailingAddress.trim() ? [mailingAddress] : []),
   ].join('\n');
 
   return { subject, html: layout({ fromName, bodyHtml, unsubscribeUrl, mailingAddress }), text };
@@ -179,7 +183,7 @@ export function excerptEmail(opts: {
     `This download link expires in 7 days.`,
     ``,
     `Unsubscribe: ${unsubscribeUrl}`,
-    mailingAddress,
+    ...(mailingAddress.trim() ? [mailingAddress] : []),
   ].join('\n');
 
   return { subject, html: layout({ fromName, bodyHtml, unsubscribeUrl, mailingAddress }), text };
