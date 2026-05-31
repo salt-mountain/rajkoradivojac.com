@@ -8,7 +8,7 @@ const PAGE_SIZE = 50;
 
 // GET /api/admin/subscribers?status=&search=&page=
 export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
-  const auth = requireAdmin(request, env);
+  const auth = await requireAdmin(request, env);
   if (auth instanceof Response) return auth;
 
   const url = new URL(request.url);
@@ -33,7 +33,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
 
 // POST /api/admin/subscribers  { email, name } — manual add (confirmed, skips opt-in)
 export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
-  const auth = requireAdmin(request, env);
+  const auth = await requireAdmin(request, env);
   if (auth instanceof Response) return auth;
 
   let body: { email?: string; name?: string };
