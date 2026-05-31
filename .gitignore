@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # Media Edit Folder
 to-use/
+
+# Local-only ops runbooks / setup notes (not for the public repo)
+ops/
