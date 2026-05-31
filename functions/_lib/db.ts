@@ -91,6 +91,25 @@ export async function insertExcerptRequest(
     .run();
 }
 
+export async function unsubscribeByToken(env: Env, token: string): Promise<void> {
+  await env.DB.prepare(
+    `UPDATE subscribers SET unsubscribed_at = datetime('now') WHERE unsubscribe_token = ?`,
+  )
+    .bind(token)
+    .run();
+}
+
+/** Clear the unsubscribed flag and confirm the subscriber (used by resubscribe). */
+export async function resubscribe(env: Env, id: number): Promise<void> {
+  await env.DB.prepare(
+    `UPDATE subscribers
+     SET unsubscribed_at = NULL, confirmed_at = COALESCE(confirmed_at, datetime('now'))
+     WHERE id = ?`,
+  )
+    .bind(id)
+    .run();
+}
+
 export async function markSubscriberConfirmed(env: Env, id: number): Promise<void> {
   await env.DB.prepare(
     `UPDATE subscribers SET confirmed_at = datetime('now') WHERE id = ? AND confirmed_at IS NULL`,

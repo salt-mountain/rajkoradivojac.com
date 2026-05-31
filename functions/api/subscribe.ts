@@ -11,7 +11,7 @@ import {
 } from '../_lib/db';
 import { signActionToken, generateUnsubscribeToken, SEVEN_DAYS_SECONDS } from '../_lib/tokens';
 import { sendEmail } from '../_lib/email';
-import { confirmationEmail } from '../_lib/templates';
+import { confirmationEmail, resubscribeEmail } from '../_lib/templates';
 import { deliverExcerpt } from '../_lib/deliver';
 
 interface SubscribeBody {
@@ -84,8 +84,29 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   // --- Branch on subscriber state ---
 
   if (sub.unsubscribed_at) {
-    // Phase 3: send a "welcome back — confirm resubscribe" email. Never silently
-    // resubscribe. For Phase 1 (no unsubscribe endpoint yet) this is unreachable.
+    // Previously unsubscribed: never silently re-add. Send a "welcome back — confirm
+    // resubscribe" email; only /api/resubscribe flips their state and delivers.
+    const exp = Math.floor(Date.now() / 1000) + SEVEN_DAYS_SECONDS;
+    const token = await signActionToken(
+      { action: 'resubscribe', sid: sub.id, book: bookSlug, exp },
+      env.HMAC_SECRET,
+    );
+    const resubscribeUrl = `${env.SITE_URL}/api/resubscribe?token=${encodeURIComponent(token)}`;
+    const unsubscribeUrl = `${env.SITE_URL}/api/unsubscribe?token=${sub.unsubscribe_token}`;
+    const tmpl = resubscribeEmail({
+      fromName: env.FROM_NAME,
+      bookTitle,
+      resubscribeUrl,
+      unsubscribeUrl,
+      mailingAddress: env.MAILING_ADDRESS,
+    });
+    await sendEmail(env, {
+      to: sub.email,
+      subject: tmpl.subject,
+      html: tmpl.html,
+      text: tmpl.text,
+      unsubscribeUrl,
+    });
     return ok();
   }
 

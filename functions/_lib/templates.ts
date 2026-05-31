@@ -91,6 +91,56 @@ export function confirmationEmail(opts: {
   return { subject, html: layout({ fromName, bodyHtml, unsubscribeUrl, mailingAddress }), text };
 }
 
+export function resubscribeEmail(opts: {
+  fromName: string;
+  bookTitle: string | null;
+  resubscribeUrl: string;
+  unsubscribeUrl: string;
+  mailingAddress: string;
+}): RenderedEmail {
+  const { fromName, bookTitle, resubscribeUrl, unsubscribeUrl, mailingAddress } = opts;
+
+  const subject = bookTitle
+    ? `Welcome back — confirm to receive the excerpt of ${bookTitle}`
+    : `Welcome back — confirm to resubscribe`;
+
+  const lead = bookTitle
+    ? `You'd previously unsubscribed, so we won't add you back automatically. Confirm below to re-subscribe and we'll send your free excerpt of <strong>${escapeHtml(bookTitle)}</strong>.`
+    : `You'd previously unsubscribed, so we won't add you back automatically. Confirm below to start receiving ${escapeHtml(fromName)}'s emails again.`;
+
+  const bodyHtml = `
+    <h1 style="margin:0 0 16px;font-size:22px;color:#0f172a;">Welcome back</h1>
+    <p style="margin:0 0 24px;font-size:15px;line-height:1.6;">${lead}</p>
+    <p style="margin:0 0 28px;">
+      <a href="${resubscribeUrl}" style="display:inline-block;background:#0f766e;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;padding:12px 24px;border-radius:6px;">Confirm &amp; resubscribe</a>
+    </p>
+    <p style="margin:0;font-size:13px;color:#6b7280;line-height:1.6;">
+      If the button doesn't work, copy and paste this link into your browser:<br>
+      <a href="${resubscribeUrl}" style="color:#0f766e;word-break:break-all;">${resubscribeUrl}</a>
+    </p>
+    <p style="margin:20px 0 0;font-size:13px;color:#6b7280;">
+      This link expires in 7 days. If you didn't request this, you can ignore this email and
+      you'll stay unsubscribed.
+    </p>`;
+
+  const text = [
+    `Welcome back`,
+    ``,
+    bookTitle
+      ? `You'd previously unsubscribed. Confirm to re-subscribe and receive your free excerpt of "${bookTitle}":`
+      : `You'd previously unsubscribed. Confirm to start receiving ${fromName}'s emails again:`,
+    ``,
+    resubscribeUrl,
+    ``,
+    `This link expires in 7 days. If you didn't request this, ignore this email and you'll stay unsubscribed.`,
+    ``,
+    `Unsubscribe: ${unsubscribeUrl}`,
+    mailingAddress,
+  ].join('\n');
+
+  return { subject, html: layout({ fromName, bodyHtml, unsubscribeUrl, mailingAddress }), text };
+}
+
 export function excerptEmail(opts: {
   fromName: string;
   bookTitle: string;
