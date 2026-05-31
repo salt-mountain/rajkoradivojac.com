@@ -26,6 +26,12 @@ export async function getSubscriberByUnsubscribeToken(
     .first<SubscriberRow>();
 }
 
+export async function getSubscriberById(env: Env, id: number): Promise<SubscriberRow | null> {
+  return env.DB.prepare('SELECT * FROM subscribers WHERE id = ?')
+    .bind(id)
+    .first<SubscriberRow>();
+}
+
 export async function insertSubscriber(
   env: Env,
   s: {
@@ -93,7 +99,7 @@ export async function markSubscriberConfirmed(env: Env, id: number): Promise<voi
     .run();
 }
 
-/** Move a pending excerpt request to confirmed (Phase 2 will then send + mark sent). */
+/** Move a pending excerpt request to confirmed (delivery then marks it sent). */
 export async function confirmExcerptRequest(
   env: Env,
   subscriberId: number,
@@ -105,5 +111,38 @@ export async function confirmExcerptRequest(
      WHERE subscriber_id = ? AND book_slug = ? AND status = 'pending'`,
   )
     .bind(subscriberId, bookSlug)
+    .run();
+}
+
+// Update the most recent not-yet-sent request for this (subscriber, book).
+const LATEST_OPEN_REQUEST =
+  `(SELECT id FROM excerpt_requests
+    WHERE subscriber_id = ? AND book_slug = ? AND status IN ('pending', 'confirmed')
+    ORDER BY id DESC LIMIT 1)`;
+
+export async function markExcerptSent(
+  env: Env,
+  subscriberId: number,
+  bookSlug: string,
+): Promise<void> {
+  await env.DB.prepare(
+    `UPDATE excerpt_requests SET status = 'sent', sent_at = datetime('now'), error = NULL
+     WHERE id = ${LATEST_OPEN_REQUEST}`,
+  )
+    .bind(subscriberId, bookSlug)
+    .run();
+}
+
+export async function markExcerptFailed(
+  env: Env,
+  subscriberId: number,
+  bookSlug: string,
+  error: string,
+): Promise<void> {
+  await env.DB.prepare(
+    `UPDATE excerpt_requests SET status = 'failed', error = ?
+     WHERE id = ${LATEST_OPEN_REQUEST}`,
+  )
+    .bind(error, subscriberId, bookSlug)
     .run();
 }

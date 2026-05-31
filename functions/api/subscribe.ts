@@ -1,4 +1,4 @@
-import type { Env } from '../_lib/types';
+import type { Env, BookRow } from '../_lib/types';
 import { validateEmail, normalizeEmail } from '../_lib/validation';
 import { checkRateLimit } from '../_lib/rate-limit';
 import {
@@ -12,6 +12,7 @@ import {
 import { signActionToken, generateUnsubscribeToken, SEVEN_DAYS_SECONDS } from '../_lib/tokens';
 import { sendEmail } from '../_lib/email';
 import { confirmationEmail } from '../_lib/templates';
+import { deliverExcerpt } from '../_lib/deliver';
 
 interface SubscribeBody {
   email?: string;
@@ -53,12 +54,12 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
 
   // Optional book. If a slug is given it must be a known active book.
   const bookSlug = body.book_slug?.trim() || null;
-  let bookTitle: string | null = null;
+  let book: BookRow | null = null;
   if (bookSlug) {
-    const book = await getActiveBook(env, bookSlug);
+    book = await getActiveBook(env, bookSlug);
     if (!book) return clientError('unknown_book');
-    bookTitle = book.title;
   }
+  const bookTitle = book?.title ?? null;
 
   const name = body.name?.trim() || null;
 
@@ -89,9 +90,11 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   }
 
   if (sub.confirmed_at) {
-    // Already confirmed. Phase 2 will send the excerpt immediately here and mark it
-    // sent. For Phase 1 we just record the (confirmed) request.
-    if (bookSlug) await insertExcerptRequest(env, sub.id, bookSlug, 'confirmed');
+    // Already confirmed -> deliver the excerpt immediately (no second opt-in).
+    if (bookSlug && book) {
+      await insertExcerptRequest(env, sub.id, bookSlug, 'confirmed');
+      await deliverExcerpt(env, sub, book);
+    }
     return ok();
   }
 

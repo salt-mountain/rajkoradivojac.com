@@ -32,3 +32,6 @@ to-use/
 
 # Local-only ops runbooks / setup notes (not for the public repo)
 ops/
+
+# Source excerpt PDFs to upload to R2 — never committed
+excerpts-src/

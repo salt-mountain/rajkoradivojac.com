@@ -90,3 +90,47 @@ export function confirmationEmail(opts: {
 
   return { subject, html: layout({ fromName, bodyHtml, unsubscribeUrl, mailingAddress }), text };
 }
+
+export function excerptEmail(opts: {
+  fromName: string;
+  bookTitle: string;
+  downloadUrl: string;
+  unsubscribeUrl: string;
+  mailingAddress: string;
+}): RenderedEmail {
+  const { fromName, bookTitle, downloadUrl, unsubscribeUrl, mailingAddress } = opts;
+
+  const subject = `Your excerpt of ${bookTitle} is ready`;
+
+  const bodyHtml = `
+    <h1 style="margin:0 0 16px;font-size:22px;color:#0f172a;">Your excerpt is ready</h1>
+    <p style="margin:0 0 24px;font-size:15px;line-height:1.6;">
+      Thanks for confirming! Here's your free excerpt of <strong>${escapeHtml(bookTitle)}</strong>.
+    </p>
+    <p style="margin:0 0 28px;">
+      <a href="${downloadUrl}" style="display:inline-block;background:#0f766e;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;padding:12px 24px;border-radius:6px;">Download the excerpt (PDF)</a>
+    </p>
+    <p style="margin:0;font-size:13px;color:#6b7280;line-height:1.6;">
+      If the button doesn't work, copy and paste this link into your browser:<br>
+      <a href="${downloadUrl}" style="color:#0f766e;word-break:break-all;">${downloadUrl}</a>
+    </p>
+    <p style="margin:20px 0 0;font-size:13px;color:#6b7280;">
+      This download link expires in 7 days. Enjoy the read, and watch your inbox for news
+      on new releases.
+    </p>`;
+
+  const text = [
+    `Your excerpt of ${bookTitle} is ready`,
+    ``,
+    `Thanks for confirming! Download your free excerpt of "${bookTitle}" here:`,
+    ``,
+    downloadUrl,
+    ``,
+    `This download link expires in 7 days.`,
+    ``,
+    `Unsubscribe: ${unsubscribeUrl}`,
+    mailingAddress,
+  ].join('\n');
+
+  return { subject, html: layout({ fromName, bodyHtml, unsubscribeUrl, mailingAddress }), text };
+}

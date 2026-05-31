@@ -2,7 +2,9 @@
 
 export interface Env {
   DB: D1Database;
-  EXCERPTS: R2Bucket;
+  // Excerpts are delivered via S3-presigned URLs (R2_* creds below), so the R2
+  // binding is optional and currently unused by the Functions.
+  EXCERPTS?: R2Bucket;
 
   // [vars] from wrangler.toml
   SITE_URL: string;
