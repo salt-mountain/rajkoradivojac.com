@@ -1,5 +1,16 @@
 ---
 import { videos } from '../data/videos';
+import { clips } from '../data/clips';
+import { photos } from '../data/photos';
+
+const hasClips = clips.length > 0;
+const hasPhotos = photos.length > 0;
+
+const parts = ['Lectures', 'TV'];
+if (hasClips) parts.push('Video');
+if (hasPhotos) parts.push('Photos');
+const heading = `${parts.slice(0, -1).join(', ')} & ${parts[parts.length - 1]}`;
+const blurb = 'Recorded lectures, television features, video, and photos from Rajko\'s beekeeping.';
 ---
 
 <section id="media" class="py-24 px-4 sm:px-6 bg-navy-950">
@@ -13,10 +24,10 @@ import { videos } from '../data/videos';
         <span class="h-px w-12 bg-primary/40"></span>
       </div>
       <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white mb-3">
-        Lectures & TV Appearances
+        {heading}
       </h2>
       <p class="text-gray-400 max-w-2xl mx-auto">
-        A selection of recorded lectures and television features on beekeeping.
+        {blurb}
       </p>
     </div>
 
@@ -40,9 +51,25 @@ import { videos } from '../data/videos';
       >
         TV Appearances
       </button>
+      {hasClips && (
+        <button
+          class="media-filter inline-flex items-center px-5 py-2 rounded-full border text-xs sm:text-sm font-semibold uppercase tracking-wider transition-colors duration-200"
+          data-filter="video"
+        >
+          Video
+        </button>
+      )}
+      {hasPhotos && (
+        <button
+          class="media-filter inline-flex items-center px-5 py-2 rounded-full border text-xs sm:text-sm font-semibold uppercase tracking-wider transition-colors duration-200"
+          data-filter="photo"
+        >
+          Photos
+        </button>
+      )}
     </div>
 
-    <!-- Video grid -->
+    <!-- Media grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-start">
       {videos.map((video) => {
         const Trigger = video.noEmbed ? 'a' : 'button';
@@ -101,6 +128,87 @@ import { videos } from '../data/videos';
         </article>
         );
       })}
+
+      {clips.map((clip) => (
+        <article class="media-card" data-type="video">
+          <button
+            type="button"
+            class="clip-trigger group block w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
+            data-clip-src={clip.src}
+            data-clip-title={clip.title}
+          >
+            <div class="relative aspect-video overflow-hidden rounded-lg bg-navy-800 shadow-lg">
+              <img
+                src={clip.poster}
+                alt=""
+                loading="lazy"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-navy-950/70 via-transparent to-transparent"></div>
+              <div class="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-200"></div>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="w-16 h-16 rounded-full bg-primary/90 group-hover:bg-primary flex items-center justify-center shadow-xl transition-transform duration-200 group-hover:scale-110">
+                  <svg class="w-7 h-7 text-navy-950 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </div>
+              </div>
+              <span class="absolute top-3 left-3 px-2.5 py-1 rounded bg-navy-950/85 text-primary text-[10px] font-semibold uppercase tracking-widest">
+                Video
+              </span>
+            </div>
+            <div class="mt-4">
+              <h3 class="font-serif text-lg font-semibold text-white group-hover:text-primary transition-colors duration-200 leading-snug">
+                {clip.title}
+              </h3>
+              {clip.secondaryTitle && (
+                <p class="text-sm text-gray-400 italic mt-1 leading-snug">
+                  {clip.secondaryTitle}
+                </p>
+              )}
+            </div>
+          </button>
+        </article>
+      ))}
+
+      {photos.map((photo) => (
+        <article class="media-card" data-type="photo">
+          <button
+            type="button"
+            class="photo-trigger group block w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
+            data-photo-src={photo.src}
+            data-photo-caption={photo.caption ?? ''}
+            data-photo-alt={photo.alt ?? 'Photo of Rajko Radivojac'}
+          >
+            <div class="relative aspect-video overflow-hidden rounded-lg bg-navy-800 shadow-lg">
+              <img
+                src={photo.src}
+                alt={photo.alt ?? 'Photo of Rajko Radivojac'}
+                loading="lazy"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div class="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-200"></div>
+              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <div class="w-14 h-14 rounded-full bg-primary/90 flex items-center justify-center shadow-xl">
+                  <svg class="w-6 h-6 text-navy-950" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+              </div>
+              <span class="absolute top-3 left-3 px-2.5 py-1 rounded bg-navy-950/85 text-primary text-[10px] font-semibold uppercase tracking-widest">
+                Photo
+              </span>
+            </div>
+            {photo.caption && (
+              <div class="mt-4">
+                <h3 class="font-serif text-lg font-semibold text-white group-hover:text-primary transition-colors duration-200 leading-snug">
+                  {photo.caption}
+                </h3>
+              </div>
+            )}
+          </button>
+        </article>
+      ))}
     </div>
   </div>
 </section>
@@ -147,6 +255,58 @@ import { videos } from '../data/videos';
   </div>
 </div>
 
+<!-- Photo lightbox modal -->
+<div
+  id="photo-modal"
+  class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/90 backdrop-blur-sm p-4 sm:p-8"
+>
+  <div class="relative max-w-5xl">
+    <button
+      id="photo-modal-close"
+      class="absolute -top-11 right-0 text-gray-300 hover:text-primary transition-colors flex items-center gap-2 text-sm"
+      aria-label="Close photo"
+    >
+      <span class="uppercase tracking-wider">Close</span>
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+    <img
+      id="photo-modal-img"
+      src=""
+      alt=""
+      class="max-w-full max-h-[85vh] rounded-lg shadow-2xl object-contain mx-auto"
+    />
+    <p id="photo-modal-caption" class="text-center text-gray-300 text-sm mt-3"></p>
+  </div>
+</div>
+
+<!-- Self-hosted video lightbox modal -->
+<div
+  id="clip-modal"
+  class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/90 backdrop-blur-sm p-4 sm:p-8"
+>
+  <div class="relative w-full max-w-4xl">
+    <button
+      id="clip-modal-close"
+      class="absolute -top-11 right-0 text-gray-300 hover:text-primary transition-colors flex items-center gap-2 text-sm"
+      aria-label="Close video"
+    >
+      <span class="uppercase tracking-wider">Close</span>
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+    <video
+      id="clip-video"
+      controls
+      playsinline
+      preload="metadata"
+      class="w-full max-h-[85vh] rounded-lg shadow-2xl bg-black"
+    ></video>
+  </div>
+</div>
+
 <style>
   .media-filter {
     border-color: var(--color-navy-600);
@@ -174,7 +334,7 @@ import { videos } from '../data/videos';
     }, { once: true });
   });
 
-  // Lightbox modal
+  // --- Video lightbox ---
   const modal = document.getElementById('video-modal');
   const iframe = document.getElementById('video-iframe') as HTMLIFrameElement | null;
   const closeBtn = document.getElementById('video-modal-close');
@@ -209,11 +369,90 @@ import { videos } from '../data/videos';
   modal?.addEventListener('click', (e) => {
     if (e.target === modal) closeVideo();
   });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !modal?.classList.contains('hidden')) closeVideo();
+
+  // --- Photo lightbox ---
+  const photoModal = document.getElementById('photo-modal');
+  const photoImg = document.getElementById('photo-modal-img') as HTMLImageElement | null;
+  const photoCaption = document.getElementById('photo-modal-caption');
+  const photoCloseBtn = document.getElementById('photo-modal-close');
+
+  function openPhoto(src: string, alt: string, caption: string) {
+    if (!photoModal || !photoImg) return;
+    photoImg.src = src;
+    photoImg.alt = alt;
+    if (photoCaption) photoCaption.textContent = caption;
+    photoModal.classList.remove('hidden');
+    photoModal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePhoto() {
+    if (!photoModal || !photoImg) return;
+    photoImg.src = '';
+    photoModal.classList.add('hidden');
+    photoModal.classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll<HTMLElement>('.photo-trigger').forEach((el) => {
+    el.addEventListener('click', () => {
+      openPhoto(
+        el.dataset.photoSrc ?? '',
+        el.dataset.photoAlt ?? '',
+        el.dataset.photoCaption ?? '',
+      );
+    });
   });
 
-  // Filter pills
+  photoCloseBtn?.addEventListener('click', closePhoto);
+  photoModal?.addEventListener('click', (e) => {
+    if (e.target === photoModal) closePhoto();
+  });
+
+  // --- Self-hosted video (clip) lightbox ---
+  const clipModal = document.getElementById('clip-modal');
+  const clipVideo = document.getElementById('clip-video') as HTMLVideoElement | null;
+  const clipCloseBtn = document.getElementById('clip-modal-close');
+
+  function openClip(src: string) {
+    if (!clipModal || !clipVideo) return;
+    clipVideo.src = src;
+    clipModal.classList.remove('hidden');
+    clipModal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+    clipVideo.play().catch(() => {});
+  }
+
+  function closeClip() {
+    if (!clipModal || !clipVideo) return;
+    clipVideo.pause();
+    clipVideo.removeAttribute('src');
+    clipVideo.load();
+    clipModal.classList.add('hidden');
+    clipModal.classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll<HTMLElement>('.clip-trigger').forEach((el) => {
+    el.addEventListener('click', () => {
+      const src = el.dataset.clipSrc;
+      if (src) openClip(src);
+    });
+  });
+
+  clipCloseBtn?.addEventListener('click', closeClip);
+  clipModal?.addEventListener('click', (e) => {
+    if (e.target === clipModal) closeClip();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (modal && !modal.classList.contains('hidden')) closeVideo();
+    if (photoModal && !photoModal.classList.contains('hidden')) closePhoto();
+    if (clipModal && !clipModal.classList.contains('hidden')) closeClip();
+  });
+
+  // --- Filter pills ---
   const filters = document.querySelectorAll<HTMLButtonElement>('.media-filter');
   const cards = document.querySelectorAll<HTMLElement>('.media-card');
   filters.forEach((btn) => {
