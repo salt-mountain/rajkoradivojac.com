@@ -14,6 +14,10 @@ export interface Env {
   SES_CONFIGURATION_SET: string;
   MAILING_ADDRESS: string;
 
+  // Optional comma-separated allowlist of admin emails (defense-in-depth on top of
+  // the Cloudflare Access policy that actually gates /admin + /api/admin/*).
+  ADMIN_EMAILS?: string;
+
   // secrets (wrangler pages secret put)
   HMAC_SECRET: string;
   AWS_ACCESS_KEY_ID: string;
@@ -43,4 +47,19 @@ export interface BookRow {
   title: string;
   excerpt_pdf_key: string;
   active: number;
+}
+
+export interface ExcerptRequestRow {
+  id: number;
+  subscriber_id: number;
+  book_slug: string;
+  status: string;
+  requested_at: string;
+  confirmed_at: string | null;
+  sent_at: string | null;
+  error: string | null;
+}
+
+export interface SubscriberListRow extends SubscriberRow {
+  request_count: number;
 }

@@ -1,4 +1,136 @@
-import type { Env, SubscriberRow, BookRow } from './types';
+import type {
+  Env,
+  SubscriberRow,
+  BookRow,
+  SubscriberListRow,
+  ExcerptRequestRow,
+} from './types';
+
+// ---------------------------------------------------------------------------
+// Admin queries
+// ---------------------------------------------------------------------------
+
+export type SubscriberStatus = 'confirmed' | 'pending' | 'unsubscribed' | 'all';
+
+export async function listSubscribers(
+  env: Env,
+  opts: { status: SubscriberStatus; search: string | null; limit: number; offset: number },
+): Promise<{ rows: SubscriberListRow[]; total: number }> {
+  const where: string[] = [];
+  const binds: unknown[] = [];
+
+  if (opts.status === 'confirmed') where.push('confirmed_at IS NOT NULL AND unsubscribed_at IS NULL');
+  else if (opts.status === 'pending') where.push('confirmed_at IS NULL AND unsubscribed_at IS NULL');
+  else if (opts.status === 'unsubscribed') where.push('unsubscribed_at IS NOT NULL');
+
+  if (opts.search) {
+    where.push('(email LIKE ? OR name LIKE ?)');
+    binds.push(`%${opts.search}%`, `%${opts.search}%`);
+  }
+
+  const whereSql = where.length ? `WHERE ${where.join(' AND ')}` : '';
+
+  const totalRow = await env.DB.prepare(`SELECT count(*) AS n FROM subscribers ${whereSql}`)
+    .bind(...binds)
+    .first<{ n: number }>();
+
+  const list = await env.DB.prepare(
+    `SELECT s.*, (SELECT count(*) FROM excerpt_requests er WHERE er.subscriber_id = s.id) AS request_count
+     FROM subscribers s ${whereSql}
+     ORDER BY s.created_at DESC
+     LIMIT ? OFFSET ?`,
+  )
+    .bind(...binds, opts.limit, opts.offset)
+    .all<SubscriberListRow>();
+
+  return { rows: list.results ?? [], total: totalRow?.n ?? 0 };
+}
+
+export async function getSubscriberWithRequests(
+  env: Env,
+  id: number,
+): Promise<{ subscriber: SubscriberRow; requests: ExcerptRequestRow[] } | null> {
+  const subscriber = await getSubscriberById(env, id);
+  if (!subscriber) return null;
+  const requests = await env.DB.prepare(
+    'SELECT * FROM excerpt_requests WHERE subscriber_id = ? ORDER BY id DESC',
+  )
+    .bind(id)
+    .all<ExcerptRequestRow>();
+  return { subscriber, requests: requests.results ?? [] };
+}
+
+export async function statsSummary(env: Env): Promise<{
+  total: number;
+  confirmed: number;
+  pending: number;
+  unsubscribed: number;
+  signups_30d: number;
+  requests_by_book: Array<{ book_slug: string; count: number }>;
+}> {
+  const counts = await env.DB.prepare(
+    `SELECT
+       count(*) AS total,
+       sum(CASE WHEN confirmed_at IS NOT NULL AND unsubscribed_at IS NULL THEN 1 ELSE 0 END) AS confirmed,
+       sum(CASE WHEN confirmed_at IS NULL AND unsubscribed_at IS NULL THEN 1 ELSE 0 END) AS pending,
+       sum(CASE WHEN unsubscribed_at IS NOT NULL THEN 1 ELSE 0 END) AS unsubscribed,
+       sum(CASE WHEN created_at > datetime('now', '-30 days') THEN 1 ELSE 0 END) AS signups_30d
+     FROM subscribers`,
+  ).first<{
+    total: number;
+    confirmed: number;
+    pending: number;
+    unsubscribed: number;
+    signups_30d: number;
+  }>();
+
+  const byBook = await env.DB.prepare(
+    `SELECT book_slug, count(*) AS count FROM excerpt_requests GROUP BY book_slug ORDER BY count DESC`,
+  ).all<{ book_slug: string; count: number }>();
+
+  return {
+    total: counts?.total ?? 0,
+    confirmed: counts?.confirmed ?? 0,
+    pending: counts?.pending ?? 0,
+    unsubscribed: counts?.unsubscribed ?? 0,
+    signups_30d: counts?.signups_30d ?? 0,
+    requests_by_book: byBook.results ?? [],
+  };
+}
+
+/** Admin manual add: upsert a CONFIRMED subscriber (skips double opt-in). */
+export async function adminAddSubscriber(
+  env: Env,
+  opts: { email: string; name: string | null; unsubscribeToken: string },
+): Promise<void> {
+  await env.DB.prepare(
+    `INSERT INTO subscribers (email, name, unsubscribe_token, confirmed_at)
+     VALUES (?, ?, ?, datetime('now'))
+     ON CONFLICT(email) DO UPDATE SET
+       name = COALESCE(excluded.name, subscribers.name),
+       confirmed_at = COALESCE(subscribers.confirmed_at, datetime('now')),
+       unsubscribed_at = NULL`,
+  )
+    .bind(opts.email, opts.name, opts.unsubscribeToken)
+    .run();
+}
+
+export async function deleteSubscriber(env: Env, id: number): Promise<void> {
+  // D1 doesn't enforce FK ON DELETE CASCADE by default, so remove children explicitly.
+  await env.DB.batch([
+    env.DB.prepare('DELETE FROM excerpt_requests WHERE subscriber_id = ?').bind(id),
+    env.DB.prepare('DELETE FROM broadcast_sends WHERE subscriber_id = ?').bind(id),
+    env.DB.prepare('DELETE FROM subscribers WHERE id = ?').bind(id),
+  ]);
+}
+
+export async function unsubscribeById(env: Env, id: number): Promise<void> {
+  await env.DB.prepare(
+    `UPDATE subscribers SET unsubscribed_at = datetime('now') WHERE id = ?`,
+  )
+    .bind(id)
+    .run();
+}
 
 export async function getActiveBook(env: Env, slug: string): Promise<BookRow | null> {
   return env.DB.prepare(
