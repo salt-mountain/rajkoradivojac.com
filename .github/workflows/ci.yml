@@ -26,7 +26,7 @@ jobs:
 
       # setup-bun caches the Bun binary, not packages; cache the install cache too.
       - name: Cache Bun install cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.bun/install/cache
           key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
