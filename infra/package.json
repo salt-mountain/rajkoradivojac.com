@@ -7,14 +7,13 @@
     "synth": "cdk synth",
     "diff": "cdk diff",
     "deploy": "cdk deploy --outputs-file cdk-outputs.json",
-    "audit-dns": "ts-node scripts/audit-dns.ts",
-    "apply-dns": "ts-node scripts/apply-dns.ts",
+    "audit-dns": "bun scripts/audit-dns.ts",
+    "apply-dns": "bun scripts/apply-dns.ts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/node": "^25.7.0",
     "aws-cdk": "^2.1126.0",
-    "ts-node": "^10.9.2",
     "typescript": "~6.0.3"
   },
   "dependencies": {
