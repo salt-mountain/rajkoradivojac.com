@@ -24,26 +24,27 @@ IAM user's inline policy grants IAM management only on `RajkoEmail*` resources.
 ## Prerequisites
 
 - AWS CLI v2 (≥ 2.32.0) + an active `aws login` session (`AWS_PROFILE=rajko`).
-- AWS CDK (`npm i -g aws-cdk`), Node.js LTS.
-- `npm install` in this directory.
+- Bun (runs the TypeScript CDK app and scripts directly). The AWS CDK CLI is a
+  local devDependency — no global install needed.
+- `bun install` in this directory.
 
 ## Usage
 
 ```bash
-npm install
+bun install
 
 # Validate locally (no AWS calls):
-npm run synth
+bun run synth
 
 # One-time per account/region:
-cdk bootstrap aws://<ACCOUNT_ID>/us-east-1
+bunx cdk bootstrap aws://<ACCOUNT_ID>/us-east-1
 
 # Review, then deploy (writes cdk-outputs.json):
-npm run diff
-npm run deploy
+bun run diff
+bun run deploy
 
 # Create Cloudflare DNS records from the deploy outputs:
-CLOUDFLARE_ZONE_ID=<zone-id> npm run apply-dns
+CLOUDFLARE_ZONE_ID=<zone-id> bun run apply-dns
 #   add --dry-run to preview
 
 # Mint the sender access key (once) and store as Wrangler secrets:
