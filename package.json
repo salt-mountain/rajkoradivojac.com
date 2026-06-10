@@ -15,13 +15,13 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.0",
-    "astro": "6.4.2",
+    "astro": "6.4.3",
     "aws4fetch": "^1.0.20",
     "tailwindcss": "4.3.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260531.1",
+    "@cloudflare/workers-types": "^4.20260603.1",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.7"
+    "vitest": "^4.1.8"
   }
 }
