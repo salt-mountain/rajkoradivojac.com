@@ -21,3 +21,15 @@ updates:
     open-pull-requests-limit: 5
     cooldown:
       default-days: 7
+
+  # The CDK infra app uses npm (infra/package-lock.json), separate from the bun root.
+  - package-ecosystem: "npm"
+    directory: "/infra"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+      semver-major-days: 30
+      semver-minor-days: 7
+      semver-patch-days: 7
