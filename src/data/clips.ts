@@ -15,4 +15,9 @@ export const clips: Clip[] = [
     poster: '/images/video-thumbs/swarm.jpg',
     title: 'How to Catch a Honey Bee Swarm',
   },
+  {
+    src: '/videos/varroa-mites.mp4',
+    poster: '/images/video-thumbs/varroa-mites.jpg',
+    title: 'Varroa Mites',
+  },
 ];
