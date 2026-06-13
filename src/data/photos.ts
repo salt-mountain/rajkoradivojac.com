@@ -20,4 +20,5 @@ export const photos: Photo[] = [
   { src: '/images/media/6.jpg' },
   { src: '/images/media/7.jpg' },
   { src: '/images/media/8.jpg' },
+  { src: '/images/media/9.jpg' },
 ];

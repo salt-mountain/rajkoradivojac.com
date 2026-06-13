@@ -20,4 +20,9 @@ export const clips: Clip[] = [
     poster: '/images/video-thumbs/varroa-mites.jpg',
     title: 'Varroa Mites',
   },
+  {
+    src: '/videos/robbing-behavior-in-honey-bees.mp4',
+    poster: '/images/video-thumbs/robbing-behavior-in-honey-bees.jpg',
+    title: 'Robbing Behavior in Honey Bees',
+  },
 ];
