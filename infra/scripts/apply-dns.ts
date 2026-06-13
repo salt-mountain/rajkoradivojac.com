@@ -13,15 +13,15 @@
  *   npm run apply-dns -- --profile rajko --dry-run
  *   npm run apply-dns -- --outputs=cdk-outputs.json
  */
-import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 
-const STACK_NAME = 'RajkoEmailStack';
-const SECRET_ID = 'rajko/cloudflare-api-token';
-const CF_API = 'https://api.cloudflare.com/client/v4';
+const STACK_NAME = "RajkoEmailStack";
+const SECRET_ID = "rajko/cloudflare-api-token";
+const CF_API = "https://api.cloudflare.com/client/v4";
 
-type RecordType = 'CNAME' | 'MX' | 'TXT';
+type RecordType = "CNAME" | "MX" | "TXT";
 
 interface DnsRecord {
   type: RecordType;
@@ -39,17 +39,19 @@ interface CliArgs {
 }
 
 function parseArgs(argv: string[]): CliArgs {
-  const dryRun = argv.includes('--dry-run');
-  const overwriteDmarc = argv.includes('--overwrite-dmarc');
+  const dryRun = argv.includes("--dry-run");
+  const overwriteDmarc = argv.includes("--overwrite-dmarc");
 
   let profile: string | undefined;
-  const profileEq = argv.find((a) => a.startsWith('--profile='));
-  if (profileEq) profile = profileEq.split('=')[1];
-  const profileIdx = argv.indexOf('--profile');
+  const profileEq = argv.find((a) => a.startsWith("--profile="));
+  if (profileEq) profile = profileEq.split("=")[1];
+  const profileIdx = argv.indexOf("--profile");
   if (profileIdx !== -1 && argv[profileIdx + 1]) profile = argv[profileIdx + 1];
 
-  const outputsEq = argv.find((a) => a.startsWith('--outputs='));
-  const outputsPath = resolve(outputsEq ? outputsEq.split('=')[1] : 'cdk-outputs.json');
+  const outputsEq = argv.find((a) => a.startsWith("--outputs="));
+  const outputsPath = resolve(
+    outputsEq ? outputsEq.split("=")[1] : "cdk-outputs.json",
+  );
 
   return { profile, outputsPath, dryRun, overwriteDmarc };
 }
@@ -63,13 +65,13 @@ function parseArgs(argv: string[]): CliArgs {
 function assertNoApexMailRecords(records: DnsRecord[], apex: string): void {
   for (const rec of records) {
     const isApex = rec.name === apex;
-    if (isApex && rec.type === 'MX') {
+    if (isApex && rec.type === "MX") {
       throw new Error(
         `Refusing to write an apex MX record (${rec.name}). That would break ` +
           `Cloudflare Email Routing for contact@${apex}. SES uses the mail.${apex} subdomain.`,
       );
     }
-    if (isApex && rec.type === 'TXT' && /^v=spf1/i.test(rec.content)) {
+    if (isApex && rec.type === "TXT" && /^v=spf1/i.test(rec.content)) {
       throw new Error(
         `Refusing to write an apex SPF record (${rec.name}). That would break ` +
           `Cloudflare Email Routing's SPF for contact@${apex}.`,
@@ -81,7 +83,7 @@ function assertNoApexMailRecords(records: DnsRecord[], apex: string): void {
 function getOutputs(path: string): Record<string, string> {
   let raw: Record<string, Record<string, string>>;
   try {
-    raw = JSON.parse(readFileSync(path, 'utf8'));
+    raw = JSON.parse(readFileSync(path, "utf8"));
   } catch (e) {
     throw new Error(
       `Could not read CDK outputs at ${path}. Run \`npm run deploy\` first ` +
@@ -97,18 +99,18 @@ function getOutputs(path: string): Record<string, string> {
 
 function getCloudflareToken(profile?: string): string {
   const args = [
-    'secretsmanager',
-    'get-secret-value',
-    '--secret-id',
+    "secretsmanager",
+    "get-secret-value",
+    "--secret-id",
     SECRET_ID,
-    '--query',
-    'SecretString',
-    '--output',
-    'text',
+    "--query",
+    "SecretString",
+    "--output",
+    "text",
   ];
-  if (profile) args.push('--profile', profile);
+  if (profile) args.push("--profile", profile);
   try {
-    return execFileSync('aws', args, { encoding: 'utf8' }).trim();
+    return execFileSync("aws", args, { encoding: "utf8" }).trim();
   } catch (e) {
     throw new Error(
       `Failed to read ${SECRET_ID} from Secrets Manager via the AWS CLI. ` +
@@ -120,27 +122,42 @@ function getCloudflareToken(profile?: string): string {
 function buildRecords(o: Record<string, string>, domain: string): DnsRecord[] {
   const mailFrom = o.MailFromDomain;
   return [
-    { type: 'CNAME', name: o.DkimToken1Name, content: o.DkimToken1Value, comment: 'SES Easy DKIM' },
-    { type: 'CNAME', name: o.DkimToken2Name, content: o.DkimToken2Value, comment: 'SES Easy DKIM' },
-    { type: 'CNAME', name: o.DkimToken3Name, content: o.DkimToken3Value, comment: 'SES Easy DKIM' },
     {
-      type: 'MX',
+      type: "CNAME",
+      name: o.DkimToken1Name,
+      content: o.DkimToken1Value,
+      comment: "SES Easy DKIM",
+    },
+    {
+      type: "CNAME",
+      name: o.DkimToken2Name,
+      content: o.DkimToken2Value,
+      comment: "SES Easy DKIM",
+    },
+    {
+      type: "CNAME",
+      name: o.DkimToken3Name,
+      content: o.DkimToken3Value,
+      comment: "SES Easy DKIM",
+    },
+    {
+      type: "MX",
       name: mailFrom,
       content: o.MailFromMxValue,
       priority: 10,
-      comment: 'SES custom MAIL FROM',
+      comment: "SES custom MAIL FROM",
     },
     {
-      type: 'TXT',
+      type: "TXT",
       name: mailFrom,
-      content: o.MailFromSpfValue ?? 'v=spf1 include:amazonses.com ~all',
-      comment: 'SES MAIL FROM SPF',
+      content: o.MailFromSpfValue ?? "v=spf1 include:amazonses.com ~all",
+      comment: "SES MAIL FROM SPF",
     },
     {
-      type: 'TXT',
+      type: "TXT",
       name: `_dmarc.${domain}`,
       content: `v=DMARC1; p=none; rua=mailto:dmarc@${domain}`,
-      comment: 'DMARC monitoring (start at p=none)',
+      comment: "DMARC monitoring (start at p=none)",
     },
   ];
 }
@@ -151,18 +168,24 @@ interface CfResponse {
   result?: Array<{ id: string }> | { id: string };
 }
 
-async function cf(token: string, path: string, init?: RequestInit): Promise<CfResponse> {
+async function cf(
+  token: string,
+  path: string,
+  init?: RequestInit,
+): Promise<CfResponse> {
   const res = await fetch(`${CF_API}${path}`, {
     ...init,
     headers: {
       Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...(init?.headers ?? {}),
     },
   });
   const json = (await res.json()) as CfResponse;
   if (!json.success) {
-    throw new Error(`Cloudflare API error on ${path}: ${JSON.stringify(json.errors)}`);
+    throw new Error(
+      `Cloudflare API error on ${path}: ${JSON.stringify(json.errors)}`,
+    );
   }
   return json;
 }
@@ -182,7 +205,7 @@ async function upsertRecord(
   const existing = results[0];
 
   // Don't silently clobber a pre-existing DMARC record (Email Routing may have set one).
-  const isDmarc = rec.type === 'TXT' && rec.name.startsWith('_dmarc.');
+  const isDmarc = rec.type === "TXT" && rec.name.startsWith("_dmarc.");
   if (existing && isDmarc && !overwriteDmarc) {
     console.warn(
       `SKIP ${rec.type} ${rec.name}: a DMARC record already exists. ` +
@@ -198,25 +221,25 @@ async function upsertRecord(
     ttl: 1, // automatic
     comment: rec.comment,
   };
-  if (rec.type === 'MX') body.priority = rec.priority ?? 10;
-  if (rec.type === 'CNAME') body.proxied = false;
+  if (rec.type === "MX") body.priority = rec.priority ?? 10;
+  if (rec.type === "CNAME") body.proxied = false;
 
   if (dryRun) {
     console.log(
-      `[dry-run] ${existing ? 'UPDATE' : 'CREATE'} ${rec.type} ${rec.name} -> ${rec.content}`,
+      `[dry-run] ${existing ? "UPDATE" : "CREATE"} ${rec.type} ${rec.name} -> ${rec.content}`,
     );
     return;
   }
 
   if (existing) {
     await cf(token, `/zones/${zoneId}/dns_records/${existing.id}`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(body),
     });
     console.log(`UPDATED ${rec.type} ${rec.name}`);
   } else {
     await cf(token, `/zones/${zoneId}/dns_records`, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(body),
     });
     console.log(`CREATED ${rec.type} ${rec.name}`);
@@ -224,13 +247,15 @@ async function upsertRecord(
 }
 
 async function main(): Promise<void> {
-  const { profile, outputsPath, dryRun, overwriteDmarc } = parseArgs(process.argv.slice(2));
+  const { profile, outputsPath, dryRun, overwriteDmarc } = parseArgs(
+    process.argv.slice(2),
+  );
 
   const zoneId = process.env.CLOUDFLARE_ZONE_ID;
   if (!zoneId) {
     throw new Error(
-      'Set CLOUDFLARE_ZONE_ID (the Cloudflare zone id for rajkoradivojac.com). ' +
-        'Find it on the zone Overview page in the Cloudflare dashboard.',
+      "Set CLOUDFLARE_ZONE_ID (the Cloudflare zone id for rajkoradivojac.com). " +
+        "Find it on the zone Overview page in the Cloudflare dashboard.",
     );
   }
 
@@ -241,12 +266,12 @@ async function main(): Promise<void> {
   const token = getCloudflareToken(profile);
 
   console.log(
-    `Applying ${records.length} DNS records to zone ${zoneId}${dryRun ? ' (dry run)' : ''}...`,
+    `Applying ${records.length} DNS records to zone ${zoneId}${dryRun ? " (dry run)" : ""}...`,
   );
   for (const rec of records) {
     await upsertRecord(token, zoneId, rec, dryRun, overwriteDmarc);
   }
-  console.log('Done.');
+  console.log("Done.");
 }
 
 main().catch((e: unknown) => {

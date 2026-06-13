@@ -11,18 +11,18 @@ export interface Clip {
 // in-page <video> player.
 export const clips: Clip[] = [
   {
-    src: '/videos/how-to-catch-a-honey-bee-swarm.mp4',
-    poster: '/images/video-thumbs/swarm.jpg',
-    title: 'How to Catch a Honey Bee Swarm',
+    src: "/videos/how-to-catch-a-honey-bee-swarm.mp4",
+    poster: "/images/video-thumbs/swarm.jpg",
+    title: "How to Catch a Honey Bee Swarm",
   },
   {
-    src: '/videos/varroa-mites.mp4',
-    poster: '/images/video-thumbs/varroa-mites.jpg',
-    title: 'Varroa Mites',
+    src: "/videos/varroa-mites.mp4",
+    poster: "/images/video-thumbs/varroa-mites.jpg",
+    title: "Varroa Mites",
   },
   {
-    src: '/videos/robbing-behavior-in-honey-bees.mp4',
-    poster: '/images/video-thumbs/robbing-behavior-in-honey-bees.jpg',
-    title: 'Robbing Behavior in Honey Bees',
+    src: "/videos/robbing-behavior-in-honey-bees.mp4",
+    poster: "/images/video-thumbs/robbing-behavior-in-honey-bees.jpg",
+    title: "Robbing Behavior in Honey Bees",
   },
 ];

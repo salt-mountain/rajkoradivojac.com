@@ -1,4 +1,4 @@
-import type { Env } from './types';
+import type { Env } from "./types";
 
 export interface AdminContext {
   email: string;
@@ -14,9 +14,9 @@ interface AccessJwtPayload {
 const decoder = new TextDecoder();
 
 function base64UrlToBytes(input: string): Uint8Array {
-  let s = input.replace(/-/g, '+').replace(/_/g, '/');
+  let s = input.replace(/-/g, "+").replace(/_/g, "/");
   const pad = s.length % 4;
-  if (pad) s += '='.repeat(4 - pad);
+  if (pad) s += "=".repeat(4 - pad);
   const bin = atob(s);
   const bytes = new Uint8Array(bin.length);
   for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
@@ -46,12 +46,15 @@ async function fetchAccessKeys(teamDomain: string): Promise<JsonWebKey[]> {
  * with `iss` = the team domain and `aud` = the application's audience tag. Returns the
  * authenticated email, or null. Requires ACCESS_TEAM_DOMAIN + ACCESS_AUD to be set.
  */
-async function verifyAccessJwt(token: string, env: Env): Promise<AdminContext | null> {
+async function verifyAccessJwt(
+  token: string,
+  env: Env,
+): Promise<AdminContext | null> {
   const teamDomain = env.ACCESS_TEAM_DOMAIN;
   const aud = env.ACCESS_AUD;
   if (!teamDomain || !aud) return null;
 
-  const parts = token.split('.');
+  const parts = token.split(".");
   if (parts.length !== 3) return null;
   const [headerSeg, payloadSeg, sigSeg] = parts;
 
@@ -64,7 +67,7 @@ async function verifyAccessJwt(token: string, env: Env): Promise<AdminContext | 
     return null;
   }
 
-  if (header.alg !== 'RS256' || !header.kid) return null;
+  if (header.alg !== "RS256" || !header.kid) return null;
   if (payload.iss !== `https://${teamDomain}`) return null;
   const auds = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
   if (!auds.includes(aud)) return null;
@@ -80,14 +83,14 @@ async function verifyAccessJwt(token: string, env: Env): Promise<AdminContext | 
   if (!jwk) return null;
 
   const key = await crypto.subtle.importKey(
-    'jwk',
+    "jwk",
     jwk,
-    { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
+    { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
     false,
-    ['verify'],
+    ["verify"],
   );
   const ok = await crypto.subtle.verify(
-    'RSASSA-PKCS1-v1_5',
+    "RSASSA-PKCS1-v1_5",
     key,
     base64UrlToBytes(sigSeg),
     new TextEncoder().encode(`${headerSeg}.${payloadSeg}`),
@@ -97,7 +100,7 @@ async function verifyAccessJwt(token: string, env: Env): Promise<AdminContext | 
 }
 
 function allowlisted(email: string, env: Env): boolean {
-  const allow = env.ADMIN_EMAILS?.split(',')
+  const allow = env.ADMIN_EMAILS?.split(",")
     .map((e) => e.trim().toLowerCase())
     .filter(Boolean);
   if (!allow || allow.length === 0) return true;
@@ -114,19 +117,19 @@ export async function requireAdmin(
   env: Env,
 ): Promise<AdminContext | Response> {
   const forbidden = () =>
-    new Response(JSON.stringify({ error: 'forbidden' }), {
+    new Response(JSON.stringify({ error: "forbidden" }), {
       status: 403,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": "application/json" },
     });
 
-  const jwt = request.headers.get('Cf-Access-Jwt-Assertion');
+  const jwt = request.headers.get("Cf-Access-Jwt-Assertion");
   if (jwt) {
     const ctx = await verifyAccessJwt(jwt, env);
     if (!ctx || !allowlisted(ctx.email, env)) return forbidden();
     return ctx;
   }
 
-  const email = request.headers.get('Cf-Access-Authenticated-User-Email');
+  const email = request.headers.get("Cf-Access-Authenticated-User-Email");
   if (!email || !allowlisted(email, env)) return forbidden();
   return { email };
 }

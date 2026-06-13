@@ -1,16 +1,17 @@
 ---
-import { videos } from '../data/videos';
-import { clips } from '../data/clips';
-import { photos } from '../data/photos';
+import { videos } from "../data/videos";
+import { clips } from "../data/clips";
+import { photos } from "../data/photos";
 
 const hasClips = clips.length > 0;
 const hasPhotos = photos.length > 0;
 
-const parts = ['Lectures', 'TV'];
-if (hasClips) parts.push('Video');
-if (hasPhotos) parts.push('Photos');
-const heading = `${parts.slice(0, -1).join(', ')} & ${parts[parts.length - 1]}`;
-const blurb = 'Recorded lectures, television features, video, and photos from Rajko\'s beekeeping.';
+const parts = ["Lectures", "TV"];
+if (hasClips) parts.push("Video");
+if (hasPhotos) parts.push("Photos");
+const heading = `${parts.slice(0, -1).join(", ")} & ${parts[parts.length - 1]}`;
+const blurb =
+  "Recorded lectures, television features, video, and photos from Rajko's beekeeping.";
 ---
 
 <section id="media" class="py-24 px-4 sm:px-6 bg-navy-950">
@@ -18,7 +19,9 @@ const blurb = 'Recorded lectures, television features, video, and photos from Ra
     <div class="text-center mb-4">
       <div class="flex items-center justify-center gap-4 mb-6">
         <span class="h-px w-12 bg-primary/40"></span>
-        <h3 class="text-primary text-xs sm:text-sm font-semibold uppercase tracking-[0.25em]">
+        <h3
+          class="text-primary text-xs sm:text-sm font-semibold uppercase tracking-[0.25em]"
+        >
           In the Media
         </h3>
         <span class="h-px w-12 bg-primary/40"></span>
@@ -51,164 +54,198 @@ const blurb = 'Recorded lectures, television features, video, and photos from Ra
       >
         TV Appearances
       </button>
-      {hasClips && (
-        <button
-          class="media-filter inline-flex items-center px-5 py-2 rounded-full border text-xs sm:text-sm font-semibold uppercase tracking-wider transition-colors duration-200"
-          data-filter="video"
-        >
-          Video
-        </button>
-      )}
-      {hasPhotos && (
-        <button
-          class="media-filter inline-flex items-center px-5 py-2 rounded-full border text-xs sm:text-sm font-semibold uppercase tracking-wider transition-colors duration-200"
-          data-filter="photo"
-        >
-          Photos
-        </button>
-      )}
+      {
+        hasClips && (
+          <button
+            class="media-filter inline-flex items-center px-5 py-2 rounded-full border text-xs sm:text-sm font-semibold uppercase tracking-wider transition-colors duration-200"
+            data-filter="video"
+          >
+            Video
+          </button>
+        )
+      }
+      {
+        hasPhotos && (
+          <button
+            class="media-filter inline-flex items-center px-5 py-2 rounded-full border text-xs sm:text-sm font-semibold uppercase tracking-wider transition-colors duration-200"
+            data-filter="photo"
+          >
+            Photos
+          </button>
+        )
+      }
     </div>
 
     <!-- Media grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-start">
-      {videos.map((video) => {
-        const Trigger = video.noEmbed ? 'a' : 'button';
-        const triggerProps = video.noEmbed
-          ? {
-              href: `https://www.youtube.com/watch?v=${video.id}`,
-              target: '_blank',
-              rel: 'noopener noreferrer',
-            }
-          : { type: 'button' as const };
-        return (
-        <article class="media-card" data-type={video.type}>
-          <Trigger
-            {...triggerProps}
-            class="video-trigger group block w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
-            data-video-id={video.id}
-            data-video-title={video.title}
-            data-no-embed={video.noEmbed ? 'true' : undefined}
-          >
-            <div class="relative aspect-video overflow-hidden rounded-lg bg-navy-800 shadow-lg">
-              <img
-                src={video.customThumbnail
-                  ? `/images/video-thumbs/${video.id}.jpg`
-                  : `https://i.ytimg.com/vi/${video.id}/maxresdefault.jpg`}
-                data-fallback={video.customThumbnail
-                  ? undefined
-                  : `https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`}
-                alt=""
-                loading="lazy"
-                class="yt-thumb w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div class="absolute inset-0 bg-gradient-to-t from-navy-950/70 via-transparent to-transparent"></div>
-              <div class="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-200"></div>
-              <div class="absolute inset-0 flex items-center justify-center">
-                <div class="w-16 h-16 rounded-full bg-primary/90 group-hover:bg-primary flex items-center justify-center shadow-xl transition-transform duration-200 group-hover:scale-110">
-                  <svg class="w-7 h-7 text-navy-950 ml-1" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 items-start"
+    >
+      {
+        videos.map((video) => {
+          const Trigger = video.noEmbed ? "a" : "button";
+          const triggerProps = video.noEmbed
+            ? {
+                href: `https://www.youtube.com/watch?v=${video.id}`,
+                target: "_blank",
+                rel: "noopener noreferrer",
+              }
+            : { type: "button" as const };
+          return (
+            <article class="media-card" data-type={video.type}>
+              <Trigger
+                {...triggerProps}
+                class="video-trigger group block w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
+                data-video-id={video.id}
+                data-video-title={video.title}
+                data-no-embed={video.noEmbed ? "true" : undefined}
+              >
+                <div class="relative aspect-video overflow-hidden rounded-lg bg-navy-800 shadow-lg">
+                  <img
+                    src={
+                      video.customThumbnail
+                        ? `/images/video-thumbs/${video.id}.jpg`
+                        : `https://i.ytimg.com/vi/${video.id}/maxresdefault.jpg`
+                    }
+                    data-fallback={
+                      video.customThumbnail
+                        ? undefined
+                        : `https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`
+                    }
+                    alt=""
+                    loading="lazy"
+                    class="yt-thumb w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-t from-navy-950/70 via-transparent to-transparent" />
+                  <div class="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-200" />
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="w-16 h-16 rounded-full bg-primary/90 group-hover:bg-primary flex items-center justify-center shadow-xl transition-transform duration-200 group-hover:scale-110">
+                      <svg
+                        class="w-7 h-7 text-navy-950 ml-1"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <span class="absolute top-3 left-3 px-2.5 py-1 rounded bg-navy-950/85 text-primary text-[10px] font-semibold uppercase tracking-widest">
+                    {video.type === "lecture" ? "Lecture" : "TV"}
+                  </span>
                 </div>
-              </div>
-              <span class="absolute top-3 left-3 px-2.5 py-1 rounded bg-navy-950/85 text-primary text-[10px] font-semibold uppercase tracking-widest">
-                {video.type === 'lecture' ? 'Lecture' : 'TV'}
-              </span>
-            </div>
-            <div class="mt-4">
-              <h3 class="font-serif text-lg font-semibold text-white group-hover:text-primary transition-colors duration-200 leading-snug">
-                {video.title}
-              </h3>
-              {video.secondaryTitle && (
-                <p class="text-sm text-gray-400 italic mt-1 leading-snug">
-                  {video.secondaryTitle}
-                </p>
-              )}
-            </div>
-          </Trigger>
-        </article>
-        );
-      })}
+                <div class="mt-4">
+                  <h3 class="font-serif text-lg font-semibold text-white group-hover:text-primary transition-colors duration-200 leading-snug">
+                    {video.title}
+                  </h3>
+                  {video.secondaryTitle && (
+                    <p class="text-sm text-gray-400 italic mt-1 leading-snug">
+                      {video.secondaryTitle}
+                    </p>
+                  )}
+                </div>
+              </Trigger>
+            </article>
+          );
+        })
+      }
 
-      {clips.map((clip) => (
-        <article class="media-card" data-type="video">
-          <button
-            type="button"
-            class="clip-trigger group block w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
-            data-clip-src={clip.src}
-            data-clip-title={clip.title}
-          >
-            <div class="relative aspect-video overflow-hidden rounded-lg bg-navy-800 shadow-lg">
-              <img
-                src={clip.poster}
-                alt=""
-                loading="lazy"
-                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div class="absolute inset-0 bg-gradient-to-t from-navy-950/70 via-transparent to-transparent"></div>
-              <div class="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-200"></div>
-              <div class="absolute inset-0 flex items-center justify-center">
-                <div class="w-16 h-16 rounded-full bg-primary/90 group-hover:bg-primary flex items-center justify-center shadow-xl transition-transform duration-200 group-hover:scale-110">
-                  <svg class="w-7 h-7 text-navy-950 ml-1" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
+      {
+        clips.map((clip) => (
+          <article class="media-card" data-type="video">
+            <button
+              type="button"
+              class="clip-trigger group block w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
+              data-clip-src={clip.src}
+              data-clip-title={clip.title}
+            >
+              <div class="relative aspect-video overflow-hidden rounded-lg bg-navy-800 shadow-lg">
+                <img
+                  src={clip.poster}
+                  alt=""
+                  loading="lazy"
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-navy-950/70 via-transparent to-transparent" />
+                <div class="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-200" />
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="w-16 h-16 rounded-full bg-primary/90 group-hover:bg-primary flex items-center justify-center shadow-xl transition-transform duration-200 group-hover:scale-110">
+                    <svg
+                      class="w-7 h-7 text-navy-950 ml-1"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
                 </div>
+                <span class="absolute top-3 left-3 px-2.5 py-1 rounded bg-navy-950/85 text-primary text-[10px] font-semibold uppercase tracking-widest">
+                  Video
+                </span>
               </div>
-              <span class="absolute top-3 left-3 px-2.5 py-1 rounded bg-navy-950/85 text-primary text-[10px] font-semibold uppercase tracking-widest">
-                Video
-              </span>
-            </div>
-            <div class="mt-4">
-              <h3 class="font-serif text-lg font-semibold text-white group-hover:text-primary transition-colors duration-200 leading-snug">
-                {clip.title}
-              </h3>
-              {clip.secondaryTitle && (
-                <p class="text-sm text-gray-400 italic mt-1 leading-snug">
-                  {clip.secondaryTitle}
-                </p>
-              )}
-            </div>
-          </button>
-        </article>
-      ))}
-
-      {photos.map((photo) => (
-        <article class="media-card" data-type="photo">
-          <button
-            type="button"
-            class="photo-trigger group block w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
-            data-photo-src={photo.src}
-            data-photo-caption={photo.caption ?? ''}
-            data-photo-alt={photo.alt ?? 'Photo of Rajko Radivojac'}
-          >
-            <div class="relative aspect-video overflow-hidden rounded-lg bg-navy-800 shadow-lg">
-              <img
-                src={photo.src}
-                alt={photo.alt ?? 'Photo of Rajko Radivojac'}
-                loading="lazy"
-                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div class="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-200"></div>
-              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                <div class="w-14 h-14 rounded-full bg-primary/90 flex items-center justify-center shadow-xl">
-                  <svg class="w-6 h-6 text-navy-950" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-              </div>
-              <span class="absolute top-3 left-3 px-2.5 py-1 rounded bg-navy-950/85 text-primary text-[10px] font-semibold uppercase tracking-widest">
-                Photo
-              </span>
-            </div>
-            {photo.caption && (
               <div class="mt-4">
                 <h3 class="font-serif text-lg font-semibold text-white group-hover:text-primary transition-colors duration-200 leading-snug">
-                  {photo.caption}
+                  {clip.title}
                 </h3>
+                {clip.secondaryTitle && (
+                  <p class="text-sm text-gray-400 italic mt-1 leading-snug">
+                    {clip.secondaryTitle}
+                  </p>
+                )}
               </div>
-            )}
-          </button>
-        </article>
-      ))}
+            </button>
+          </article>
+        ))
+      }
+
+      {
+        photos.map((photo) => (
+          <article class="media-card" data-type="photo">
+            <button
+              type="button"
+              class="photo-trigger group block w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
+              data-photo-src={photo.src}
+              data-photo-caption={photo.caption ?? ""}
+              data-photo-alt={photo.alt ?? "Photo of Rajko Radivojac"}
+            >
+              <div class="relative aspect-video overflow-hidden rounded-lg bg-navy-800 shadow-lg">
+                <img
+                  src={photo.src}
+                  alt={photo.alt ?? "Photo of Rajko Radivojac"}
+                  loading="lazy"
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div class="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-200" />
+                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  <div class="w-14 h-14 rounded-full bg-primary/90 flex items-center justify-center shadow-xl">
+                    <svg
+                      class="w-6 h-6 text-navy-950"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <span class="absolute top-3 left-3 px-2.5 py-1 rounded bg-navy-950/85 text-primary text-[10px] font-semibold uppercase tracking-widest">
+                  Photo
+                </span>
+              </div>
+              {photo.caption && (
+                <div class="mt-4">
+                  <h3 class="font-serif text-lg font-semibold text-white group-hover:text-primary transition-colors duration-200 leading-snug">
+                    {photo.caption}
+                  </h3>
+                </div>
+              )}
+            </button>
+          </article>
+        ))
+      }
     </div>
   </div>
 </section>
@@ -225,11 +262,22 @@ const blurb = 'Recorded lectures, television features, video, and photos from Ra
       aria-label="Close video"
     >
       <span class="uppercase tracking-wider">Close</span>
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"></path>
       </svg>
     </button>
-    <div class="relative aspect-video bg-black rounded-lg overflow-hidden shadow-2xl">
+    <div
+      class="relative aspect-video bg-black rounded-lg overflow-hidden shadow-2xl"
+    >
       <iframe
         id="video-iframe"
         class="w-full h-full"
@@ -237,8 +285,7 @@ const blurb = 'Recorded lectures, television features, video, and photos from Ra
         title="YouTube video player"
         frameborder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowfullscreen
-      ></iframe>
+        allowfullscreen></iframe>
     </div>
     <a
       id="video-modal-yt"
@@ -248,8 +295,18 @@ const blurb = 'Recorded lectures, television features, video, and photos from Ra
       class="inline-flex items-center gap-1.5 mt-4 text-sm text-gray-400 hover:text-primary transition-colors"
     >
       Watch on YouTube
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+      <svg
+        class="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+        ></path>
       </svg>
     </a>
   </div>
@@ -267,8 +324,17 @@ const blurb = 'Recorded lectures, television features, video, and photos from Ra
       aria-label="Close photo"
     >
       <span class="uppercase tracking-wider">Close</span>
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"></path>
       </svg>
     </button>
     <img
@@ -277,7 +343,8 @@ const blurb = 'Recorded lectures, television features, video, and photos from Ra
       alt=""
       class="max-w-full max-h-[85vh] rounded-lg shadow-2xl object-contain mx-auto"
     />
-    <p id="photo-modal-caption" class="text-center text-gray-300 text-sm mt-3"></p>
+    <p id="photo-modal-caption" class="text-center text-gray-300 text-sm mt-3">
+    </p>
   </div>
 </div>
 
@@ -293,8 +360,17 @@ const blurb = 'Recorded lectures, television features, video, and photos from Ra
       aria-label="Close video"
     >
       <span class="uppercase tracking-wider">Close</span>
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"></path>
       </svg>
     </button>
     <video
@@ -302,15 +378,14 @@ const blurb = 'Recorded lectures, television features, video, and photos from Ra
       controls
       playsinline
       preload="metadata"
-      class="w-full max-h-[85vh] rounded-lg shadow-2xl bg-black"
-    ></video>
+      class="w-full max-h-[85vh] rounded-lg shadow-2xl bg-black"></video>
   </div>
 </div>
 
 <style>
   .media-filter {
     border-color: var(--color-navy-600);
-    color: #9CA3AF; /* gray-400 */
+    color: #9ca3af; /* gray-400 */
   }
   .media-filter:hover {
     border-color: var(--color-primary);
@@ -325,146 +400,158 @@ const blurb = 'Recorded lectures, television features, video, and photos from Ra
 
 <script>
   // maxresdefault.jpg doesn't exist for every video; on 404 fall back to hqdefault.jpg.
-  document.querySelectorAll<HTMLImageElement>('img.yt-thumb').forEach((img) => {
-    img.addEventListener('error', () => {
-      const fallback = img.dataset.fallback;
-      if (fallback && img.src !== fallback) {
-        img.src = fallback;
-      }
-    }, { once: true });
+  document.querySelectorAll<HTMLImageElement>("img.yt-thumb").forEach((img) => {
+    img.addEventListener(
+      "error",
+      () => {
+        const fallback = img.dataset.fallback;
+        if (fallback && img.src !== fallback) {
+          img.src = fallback;
+        }
+      },
+      { once: true },
+    );
   });
 
   // --- Video lightbox ---
-  const modal = document.getElementById('video-modal');
-  const iframe = document.getElementById('video-iframe') as HTMLIFrameElement | null;
-  const closeBtn = document.getElementById('video-modal-close');
-  const ytLink = document.getElementById('video-modal-yt') as HTMLAnchorElement | null;
+  const modal = document.getElementById("video-modal");
+  const iframe = document.getElementById(
+    "video-iframe",
+  ) as HTMLIFrameElement | null;
+  const closeBtn = document.getElementById("video-modal-close");
+  const ytLink = document.getElementById(
+    "video-modal-yt",
+  ) as HTMLAnchorElement | null;
 
   function openVideo(id: string) {
     if (!modal || !iframe) return;
     iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;
     if (ytLink) ytLink.href = `https://www.youtube.com/watch?v=${id}`;
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-    document.body.style.overflow = 'hidden';
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    document.body.style.overflow = "hidden";
   }
 
   function closeVideo() {
     if (!modal || !iframe) return;
-    iframe.src = '';
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-    document.body.style.overflow = '';
+    iframe.src = "";
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    document.body.style.overflow = "";
   }
 
-  document.querySelectorAll<HTMLElement>('.video-trigger').forEach((el) => {
-    if (el.dataset.noEmbed === 'true') return;
-    el.addEventListener('click', () => {
+  document.querySelectorAll<HTMLElement>(".video-trigger").forEach((el) => {
+    if (el.dataset.noEmbed === "true") return;
+    el.addEventListener("click", () => {
       const id = el.dataset.videoId;
       if (id) openVideo(id);
     });
   });
 
-  closeBtn?.addEventListener('click', closeVideo);
-  modal?.addEventListener('click', (e) => {
+  closeBtn?.addEventListener("click", closeVideo);
+  modal?.addEventListener("click", (e) => {
     if (e.target === modal) closeVideo();
   });
 
   // --- Photo lightbox ---
-  const photoModal = document.getElementById('photo-modal');
-  const photoImg = document.getElementById('photo-modal-img') as HTMLImageElement | null;
-  const photoCaption = document.getElementById('photo-modal-caption');
-  const photoCloseBtn = document.getElementById('photo-modal-close');
+  const photoModal = document.getElementById("photo-modal");
+  const photoImg = document.getElementById(
+    "photo-modal-img",
+  ) as HTMLImageElement | null;
+  const photoCaption = document.getElementById("photo-modal-caption");
+  const photoCloseBtn = document.getElementById("photo-modal-close");
 
   function openPhoto(src: string, alt: string, caption: string) {
     if (!photoModal || !photoImg) return;
     photoImg.src = src;
     photoImg.alt = alt;
     if (photoCaption) photoCaption.textContent = caption;
-    photoModal.classList.remove('hidden');
-    photoModal.classList.add('flex');
-    document.body.style.overflow = 'hidden';
+    photoModal.classList.remove("hidden");
+    photoModal.classList.add("flex");
+    document.body.style.overflow = "hidden";
   }
 
   function closePhoto() {
     if (!photoModal || !photoImg) return;
-    photoImg.src = '';
-    photoModal.classList.add('hidden');
-    photoModal.classList.remove('flex');
-    document.body.style.overflow = '';
+    photoImg.src = "";
+    photoModal.classList.add("hidden");
+    photoModal.classList.remove("flex");
+    document.body.style.overflow = "";
   }
 
-  document.querySelectorAll<HTMLElement>('.photo-trigger').forEach((el) => {
-    el.addEventListener('click', () => {
+  document.querySelectorAll<HTMLElement>(".photo-trigger").forEach((el) => {
+    el.addEventListener("click", () => {
       openPhoto(
-        el.dataset.photoSrc ?? '',
-        el.dataset.photoAlt ?? '',
-        el.dataset.photoCaption ?? '',
+        el.dataset.photoSrc ?? "",
+        el.dataset.photoAlt ?? "",
+        el.dataset.photoCaption ?? "",
       );
     });
   });
 
-  photoCloseBtn?.addEventListener('click', closePhoto);
-  photoModal?.addEventListener('click', (e) => {
+  photoCloseBtn?.addEventListener("click", closePhoto);
+  photoModal?.addEventListener("click", (e) => {
     if (e.target === photoModal) closePhoto();
   });
 
   // --- Self-hosted video (clip) lightbox ---
-  const clipModal = document.getElementById('clip-modal');
-  const clipVideo = document.getElementById('clip-video') as HTMLVideoElement | null;
-  const clipCloseBtn = document.getElementById('clip-modal-close');
+  const clipModal = document.getElementById("clip-modal");
+  const clipVideo = document.getElementById(
+    "clip-video",
+  ) as HTMLVideoElement | null;
+  const clipCloseBtn = document.getElementById("clip-modal-close");
 
   function openClip(src: string) {
     if (!clipModal || !clipVideo) return;
     clipVideo.src = src;
-    clipModal.classList.remove('hidden');
-    clipModal.classList.add('flex');
-    document.body.style.overflow = 'hidden';
+    clipModal.classList.remove("hidden");
+    clipModal.classList.add("flex");
+    document.body.style.overflow = "hidden";
     clipVideo.play().catch(() => {});
   }
 
   function closeClip() {
     if (!clipModal || !clipVideo) return;
     clipVideo.pause();
-    clipVideo.removeAttribute('src');
+    clipVideo.removeAttribute("src");
     clipVideo.load();
-    clipModal.classList.add('hidden');
-    clipModal.classList.remove('flex');
-    document.body.style.overflow = '';
+    clipModal.classList.add("hidden");
+    clipModal.classList.remove("flex");
+    document.body.style.overflow = "";
   }
 
-  document.querySelectorAll<HTMLElement>('.clip-trigger').forEach((el) => {
-    el.addEventListener('click', () => {
+  document.querySelectorAll<HTMLElement>(".clip-trigger").forEach((el) => {
+    el.addEventListener("click", () => {
       const src = el.dataset.clipSrc;
       if (src) openClip(src);
     });
   });
 
-  clipCloseBtn?.addEventListener('click', closeClip);
-  clipModal?.addEventListener('click', (e) => {
+  clipCloseBtn?.addEventListener("click", closeClip);
+  clipModal?.addEventListener("click", (e) => {
     if (e.target === clipModal) closeClip();
   });
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key !== 'Escape') return;
-    if (modal && !modal.classList.contains('hidden')) closeVideo();
-    if (photoModal && !photoModal.classList.contains('hidden')) closePhoto();
-    if (clipModal && !clipModal.classList.contains('hidden')) closeClip();
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if (modal && !modal.classList.contains("hidden")) closeVideo();
+    if (photoModal && !photoModal.classList.contains("hidden")) closePhoto();
+    if (clipModal && !clipModal.classList.contains("hidden")) closeClip();
   });
 
   // --- Filter pills ---
-  const filters = document.querySelectorAll<HTMLButtonElement>('.media-filter');
-  const cards = document.querySelectorAll<HTMLElement>('.media-card');
+  const filters = document.querySelectorAll<HTMLButtonElement>(".media-filter");
+  const cards = document.querySelectorAll<HTMLElement>(".media-card");
   filters.forEach((btn) => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener("click", () => {
       const filter = btn.dataset.filter;
-      filters.forEach((b) => b.classList.remove('is-active'));
-      btn.classList.add('is-active');
+      filters.forEach((b) => b.classList.remove("is-active"));
+      btn.classList.add("is-active");
       cards.forEach((card) => {
-        if (filter === 'all' || card.dataset.type === filter) {
-          card.classList.remove('hidden');
+        if (filter === "all" || card.dataset.type === filter) {
+          card.classList.remove("hidden");
         } else {
-          card.classList.add('hidden');
+          card.classList.add("hidden");
         }
       });
     });

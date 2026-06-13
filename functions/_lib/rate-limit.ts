@@ -12,14 +12,16 @@ export async function checkRateLimit(
   const nowIso = new Date(now).toISOString();
 
   const row = await db
-    .prepare('SELECT count, window_start FROM rate_limits WHERE ip = ? AND bucket = ?')
+    .prepare(
+      "SELECT count, window_start FROM rate_limits WHERE ip = ? AND bucket = ?",
+    )
     .bind(ip, bucket)
     .first<{ count: number; window_start: string }>();
 
   if (!row) {
     await db
       .prepare(
-        'INSERT INTO rate_limits (ip, bucket, count, window_start) VALUES (?, ?, 1, ?)',
+        "INSERT INTO rate_limits (ip, bucket, count, window_start) VALUES (?, ?, 1, ?)",
       )
       .bind(ip, bucket, nowIso)
       .run();
@@ -30,7 +32,9 @@ export async function checkRateLimit(
   if (elapsed > windowMs) {
     // Window expired: reset.
     await db
-      .prepare('UPDATE rate_limits SET count = 1, window_start = ? WHERE ip = ? AND bucket = ?')
+      .prepare(
+        "UPDATE rate_limits SET count = 1, window_start = ? WHERE ip = ? AND bucket = ?",
+      )
       .bind(nowIso, ip, bucket)
       .run();
     return true;
@@ -39,7 +43,9 @@ export async function checkRateLimit(
   if (row.count >= limit) return false;
 
   await db
-    .prepare('UPDATE rate_limits SET count = count + 1 WHERE ip = ? AND bucket = ?')
+    .prepare(
+      "UPDATE rate_limits SET count = count + 1 WHERE ip = ? AND bucket = ?",
+    )
     .bind(ip, bucket)
     .run();
   return true;

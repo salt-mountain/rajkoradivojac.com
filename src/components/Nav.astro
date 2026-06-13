@@ -1,9 +1,9 @@
 ---
-import { books } from '../data/books';
+import { books } from "../data/books";
 
-const beekeepingBooks = books.filter((b) => b.category === 'beekeeping');
-const childrensBooks = books.filter((b) => b.category === 'children');
-const coloringBooks = books.filter((b) => b.category === 'coloring');
+const beekeepingBooks = books.filter((b) => b.category === "beekeeping");
+const childrensBooks = books.filter((b) => b.category === "children");
+const coloringBooks = books.filter((b) => b.category === "coloring");
 ---
 
 <nav
@@ -12,7 +12,10 @@ const coloringBooks = books.filter((b) => b.category === 'coloring');
 >
   <div class="max-w-6xl mx-auto px-4 sm:px-6">
     <div class="flex items-center justify-between h-16">
-      <a href="#hero" class="text-primary font-serif text-xl font-bold tracking-wide">
+      <a
+        href="#hero"
+        class="text-primary font-serif text-xl font-bold tracking-wide"
+      >
         Rajko Radivojac
       </a>
 
@@ -22,14 +25,18 @@ const coloringBooks = books.filter((b) => b.category === 'coloring');
         class="md:hidden text-gray-300 hover:text-primary transition-colors"
         aria-label="Toggle menu"
       >
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path
             id="menu-icon"
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="2"
-            d="M4 6h16M4 12h16M4 18h16"
-          />
+            d="M4 6h16M4 12h16M4 18h16"></path>
         </svg>
       </button>
 
@@ -42,49 +49,71 @@ const coloringBooks = books.filter((b) => b.category === 'coloring');
             class="text-sm uppercase tracking-wider text-gray-400 hover:text-primary transition-colors duration-200 flex items-center gap-1"
           >
             Books
-            <svg class="w-3.5 h-3.5 transition-transform duration-200" id="dropdown-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            <svg
+              class="w-3.5 h-3.5 transition-transform duration-200"
+              id="dropdown-chevron"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"></path>
             </svg>
           </button>
           <div
             id="books-dropdown-menu"
             class="hidden absolute top-full left-0 mt-2 min-w-56 bg-navy-800 border border-navy-600 rounded-lg shadow-xl py-2"
           >
-            <div class="px-4 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary/80">
+            <div
+              class="px-4 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary/80"
+            >
               Beekeeping
             </div>
-            {beekeepingBooks.map((book) => (
-              <a
-                href={`#${book.id}`}
-                class="books-dropdown-link block px-4 py-2 text-sm text-gray-400 hover:text-primary hover:bg-navy-700 transition-colors duration-200"
-              >
-                {book.title}
-              </a>
-            ))}
+            {
+              beekeepingBooks.map((book) => (
+                <a
+                  href={`#${book.id}`}
+                  class="books-dropdown-link block px-4 py-2 text-sm text-gray-400 hover:text-primary hover:bg-navy-700 transition-colors duration-200"
+                >
+                  {book.title}
+                </a>
+              ))
+            }
             <div class="my-2 border-t border-navy-600"></div>
-            <div class="px-4 pt-1 pb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary/80">
+            <div
+              class="px-4 pt-1 pb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary/80"
+            >
               Children's Books
             </div>
-            {childrensBooks.map((book) => (
-              <a
-                href={`#${book.id}`}
-                class="books-dropdown-link block px-4 py-2 text-sm text-gray-400 hover:text-primary hover:bg-navy-700 transition-colors duration-200"
-              >
-                {book.title}
-              </a>
-            ))}
+            {
+              childrensBooks.map((book) => (
+                <a
+                  href={`#${book.id}`}
+                  class="books-dropdown-link block px-4 py-2 text-sm text-gray-400 hover:text-primary hover:bg-navy-700 transition-colors duration-200"
+                >
+                  {book.title}
+                </a>
+              ))
+            }
             <div class="my-2 border-t border-navy-600"></div>
-            <div class="px-4 pt-1 pb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary/80">
+            <div
+              class="px-4 pt-1 pb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary/80"
+            >
               Cozy Coloring Books
             </div>
-            {coloringBooks.map((book) => (
-              <a
-                href={`#${book.id}`}
-                class="books-dropdown-link block px-4 py-2 text-sm text-gray-400 hover:text-primary hover:bg-navy-700 transition-colors duration-200"
-              >
-                {book.title}
-              </a>
-            ))}
+            {
+              coloringBooks.map((book) => (
+                <a
+                  href={`#${book.id}`}
+                  class="books-dropdown-link block px-4 py-2 text-sm text-gray-400 hover:text-primary hover:bg-navy-700 transition-colors duration-200"
+                >
+                  {book.title}
+                </a>
+              ))
+            }
           </div>
         </div>
 
@@ -112,39 +141,51 @@ const coloringBooks = books.filter((b) => b.category === 'coloring');
     <!-- Mobile nav -->
     <div id="mobile-menu" class="hidden md:hidden pb-4">
       <div class="flex flex-col space-y-3">
-        <div class="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary/80">
+        <div
+          class="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary/80"
+        >
           Beekeeping
         </div>
-        {beekeepingBooks.map((book) => (
-          <a
-            href={`#${book.id}`}
-            class="mobile-nav-link text-sm uppercase tracking-wider text-gray-400 hover:text-primary transition-colors duration-200"
-          >
-            {book.title}
-          </a>
-        ))}
-        <div class="pt-2 border-t border-navy-700 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary/80">
+        {
+          beekeepingBooks.map((book) => (
+            <a
+              href={`#${book.id}`}
+              class="mobile-nav-link text-sm uppercase tracking-wider text-gray-400 hover:text-primary transition-colors duration-200"
+            >
+              {book.title}
+            </a>
+          ))
+        }
+        <div
+          class="pt-2 border-t border-navy-700 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary/80"
+        >
           Children's Books
         </div>
-        {childrensBooks.map((book) => (
-          <a
-            href={`#${book.id}`}
-            class="mobile-nav-link text-sm uppercase tracking-wider text-gray-400 hover:text-primary transition-colors duration-200"
-          >
-            {book.title}
-          </a>
-        ))}
-        <div class="pt-2 border-t border-navy-700 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary/80">
+        {
+          childrensBooks.map((book) => (
+            <a
+              href={`#${book.id}`}
+              class="mobile-nav-link text-sm uppercase tracking-wider text-gray-400 hover:text-primary transition-colors duration-200"
+            >
+              {book.title}
+            </a>
+          ))
+        }
+        <div
+          class="pt-2 border-t border-navy-700 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary/80"
+        >
           Cozy Coloring Books
         </div>
-        {coloringBooks.map((book) => (
-          <a
-            href={`#${book.id}`}
-            class="mobile-nav-link text-sm uppercase tracking-wider text-gray-400 hover:text-primary transition-colors duration-200"
-          >
-            {book.title}
-          </a>
-        ))}
+        {
+          coloringBooks.map((book) => (
+            <a
+              href={`#${book.id}`}
+              class="mobile-nav-link text-sm uppercase tracking-wider text-gray-400 hover:text-primary transition-colors duration-200"
+            >
+              {book.title}
+            </a>
+          ))
+        }
         <a
           href="#media"
           class="mobile-nav-link text-sm uppercase tracking-wider text-gray-400 hover:text-primary transition-colors duration-200"
@@ -170,39 +211,39 @@ const coloringBooks = books.filter((b) => b.category === 'coloring');
 
 <script>
   // Mobile menu toggle
-  const btn = document.getElementById('mobile-menu-btn');
-  const menu = document.getElementById('mobile-menu');
-  const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+  const btn = document.getElementById("mobile-menu-btn");
+  const menu = document.getElementById("mobile-menu");
+  const mobileLinks = document.querySelectorAll(".mobile-nav-link");
 
-  btn?.addEventListener('click', () => {
-    menu?.classList.toggle('hidden');
+  btn?.addEventListener("click", () => {
+    menu?.classList.toggle("hidden");
   });
 
   mobileLinks.forEach((link) => {
-    link.addEventListener('click', () => {
-      menu?.classList.add('hidden');
+    link.addEventListener("click", () => {
+      menu?.classList.add("hidden");
     });
   });
 
   // Books dropdown
-  const dropdownBtn = document.getElementById('books-dropdown-btn');
-  const dropdownMenu = document.getElementById('books-dropdown-menu');
-  const dropdownChevron = document.getElementById('dropdown-chevron');
-  const dropdownLinks = document.querySelectorAll('.books-dropdown-link');
+  const dropdownBtn = document.getElementById("books-dropdown-btn");
+  const dropdownMenu = document.getElementById("books-dropdown-menu");
+  const dropdownChevron = document.getElementById("dropdown-chevron");
+  const dropdownLinks = document.querySelectorAll(".books-dropdown-link");
 
   function openDropdown() {
-    dropdownMenu?.classList.remove('hidden');
-    dropdownChevron?.classList.add('rotate-180');
+    dropdownMenu?.classList.remove("hidden");
+    dropdownChevron?.classList.add("rotate-180");
   }
 
   function closeDropdown() {
-    dropdownMenu?.classList.add('hidden');
-    dropdownChevron?.classList.remove('rotate-180');
+    dropdownMenu?.classList.add("hidden");
+    dropdownChevron?.classList.remove("rotate-180");
   }
 
-  dropdownBtn?.addEventListener('click', (e) => {
+  dropdownBtn?.addEventListener("click", (e) => {
     e.stopPropagation();
-    if (dropdownMenu?.classList.contains('hidden')) {
+    if (dropdownMenu?.classList.contains("hidden")) {
       openDropdown();
     } else {
       closeDropdown();
@@ -211,14 +252,14 @@ const coloringBooks = books.filter((b) => b.category === 'coloring');
 
   // Close dropdown when a book link is clicked
   dropdownLinks.forEach((link) => {
-    link.addEventListener('click', () => {
+    link.addEventListener("click", () => {
       closeDropdown();
     });
   });
 
   // Close dropdown when clicking outside
-  document.addEventListener('click', (e) => {
-    const dropdown = document.getElementById('books-dropdown');
+  document.addEventListener("click", (e) => {
+    const dropdown = document.getElementById("books-dropdown");
     if (dropdown && !dropdown.contains(e.target as Node)) {
       closeDropdown();
     }

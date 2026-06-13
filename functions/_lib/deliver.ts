@@ -1,8 +1,8 @@
-import type { Env, SubscriberRow, BookRow } from './types';
-import { signExcerptUrl } from './r2-sign';
-import { excerptEmail } from './templates';
-import { sendEmail } from './email';
-import { markExcerptSent, markExcerptFailed } from './db';
+import type { Env, SubscriberRow, BookRow } from "./types";
+import { signExcerptUrl } from "./r2-sign";
+import { excerptEmail } from "./templates";
+import { sendEmail } from "./email";
+import { markExcerptSent, markExcerptFailed } from "./db";
 
 /**
  * Presign the excerpt PDF, email the link, and record the outcome on the request row.

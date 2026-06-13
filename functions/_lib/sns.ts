@@ -21,7 +21,10 @@ const encoder = new TextEncoder();
 export function isAwsSnsUrl(url: string): boolean {
   try {
     const u = new URL(url);
-    return u.protocol === 'https:' && /^sns\.[a-z0-9-]+\.amazonaws\.com$/.test(u.hostname);
+    return (
+      u.protocol === "https:" &&
+      /^sns\.[a-z0-9-]+\.amazonaws\.com$/.test(u.hostname)
+    );
   } catch {
     return false;
   }
@@ -30,24 +33,31 @@ export function isAwsSnsUrl(url: string): boolean {
 // Canonical string-to-sign per the SNS spec (key\nvalue\n for a fixed field set/order).
 function canonicalString(m: SnsMessage): string | null {
   const fields: Array<[string, string | undefined]> = [];
-  if (m.Type === 'Notification') {
-    fields.push(['Message', m.Message], ['MessageId', m.MessageId]);
-    if (m.Subject !== undefined) fields.push(['Subject', m.Subject]);
-    fields.push(['Timestamp', m.Timestamp], ['TopicArn', m.TopicArn], ['Type', m.Type]);
-  } else if (m.Type === 'SubscriptionConfirmation' || m.Type === 'UnsubscribeConfirmation') {
+  if (m.Type === "Notification") {
+    fields.push(["Message", m.Message], ["MessageId", m.MessageId]);
+    if (m.Subject !== undefined) fields.push(["Subject", m.Subject]);
     fields.push(
-      ['Message', m.Message],
-      ['MessageId', m.MessageId],
-      ['SubscribeURL', m.SubscribeURL ?? ''],
-      ['Timestamp', m.Timestamp],
-      ['Token', m.Token ?? ''],
-      ['TopicArn', m.TopicArn],
-      ['Type', m.Type],
+      ["Timestamp", m.Timestamp],
+      ["TopicArn", m.TopicArn],
+      ["Type", m.Type],
+    );
+  } else if (
+    m.Type === "SubscriptionConfirmation" ||
+    m.Type === "UnsubscribeConfirmation"
+  ) {
+    fields.push(
+      ["Message", m.Message],
+      ["MessageId", m.MessageId],
+      ["SubscribeURL", m.SubscribeURL ?? ""],
+      ["Timestamp", m.Timestamp],
+      ["Token", m.Token ?? ""],
+      ["TopicArn", m.TopicArn],
+      ["Type", m.Type],
     );
   } else {
     return null;
   }
-  return fields.map(([k, v]) => `${k}\n${v ?? ''}\n`).join('');
+  return fields.map(([k, v]) => `${k}\n${v ?? ""}\n`).join("");
 }
 
 function b64ToBytes(b64: string): Uint8Array {
@@ -59,9 +69,9 @@ function b64ToBytes(b64: string): Uint8Array {
 
 function pemToDer(pem: string): Uint8Array {
   const b64 = pem
-    .replace(/-----BEGIN CERTIFICATE-----/, '')
-    .replace(/-----END CERTIFICATE-----/, '')
-    .replace(/\s+/g, '');
+    .replace(/-----BEGIN CERTIFICATE-----/, "")
+    .replace(/-----END CERTIFICATE-----/, "")
+    .replace(/\s+/g, "");
   return b64ToBytes(b64);
 }
 
@@ -77,10 +87,10 @@ function readLen(buf: Uint8Array, off: number): { len: number; hdr: number } {
 // Extract the SubjectPublicKeyInfo (SPKI) DER from a DER X.509 certificate. Web Crypto
 // can import an SPKI public key but not a full cert, so we walk the ASN.1 to find it.
 function extractSpki(der: Uint8Array): Uint8Array {
-  if (der[0] !== 0x30) throw new Error('not a SEQUENCE');
+  if (der[0] !== 0x30) throw new Error("not a SEQUENCE");
   const cert = readLen(der, 1);
   let p = 1 + cert.hdr; // into Certificate
-  if (der[p] !== 0x30) throw new Error('no tbsCertificate');
+  if (der[p] !== 0x30) throw new Error("no tbsCertificate");
   const tbs = readLen(der, p + 1);
   p = p + 1 + tbs.hdr; // into tbsCertificate
   if (der[p] === 0xa0) {
@@ -93,7 +103,7 @@ function extractSpki(der: Uint8Array): Uint8Array {
     const l = readLen(der, p + 1);
     p += 1 + l.hdr + l.len;
   }
-  if (der[p] !== 0x30) throw new Error('no subjectPublicKeyInfo');
+  if (der[p] !== 0x30) throw new Error("no subjectPublicKeyInfo");
   const spki = readLen(der, p + 1);
   return der.slice(p, p + 1 + spki.hdr + spki.len);
 }
@@ -115,18 +125,18 @@ export async function verifySnsMessage(m: SnsMessage): Promise<boolean> {
   const canon = canonicalString(m);
   if (canon === null) return false;
 
-  const hash = m.SignatureVersion === '2' ? 'SHA-256' : 'SHA-1';
+  const hash = m.SignatureVersion === "2" ? "SHA-256" : "SHA-1";
   try {
     const spki = await getSpki(m.SigningCertURL);
     const key = await crypto.subtle.importKey(
-      'spki',
+      "spki",
       spki,
-      { name: 'RSASSA-PKCS1-v1_5', hash },
+      { name: "RSASSA-PKCS1-v1_5", hash },
       false,
-      ['verify'],
+      ["verify"],
     );
     return await crypto.subtle.verify(
-      'RSASSA-PKCS1-v1_5',
+      "RSASSA-PKCS1-v1_5",
       key,
       b64ToBytes(m.Signature),
       encoder.encode(canon),

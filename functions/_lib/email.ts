@@ -1,5 +1,5 @@
-import { AwsClient } from 'aws4fetch';
-import type { Env } from './types';
+import { AwsClient } from "aws4fetch";
+import type { Env } from "./types";
 
 export interface OutboundEmail {
   to: string;
@@ -21,7 +21,7 @@ export async function sendEmail(env: Env, msg: OutboundEmail): Promise<string> {
     accessKeyId: env.AWS_ACCESS_KEY_ID,
     secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
     region: env.SES_REGION,
-    service: 'ses',
+    service: "ses",
   });
 
   const endpoint = `https://email.${env.SES_REGION}.amazonaws.com/v2/email/outbound-emails`;
@@ -32,22 +32,25 @@ export async function sendEmail(env: Env, msg: OutboundEmail): Promise<string> {
     ConfigurationSetName: env.SES_CONFIGURATION_SET,
     Content: {
       Simple: {
-        Subject: { Data: msg.subject, Charset: 'UTF-8' },
+        Subject: { Data: msg.subject, Charset: "UTF-8" },
         Body: {
-          Html: { Data: msg.html, Charset: 'UTF-8' },
-          Text: { Data: msg.text, Charset: 'UTF-8' },
+          Html: { Data: msg.html, Charset: "UTF-8" },
+          Text: { Data: msg.text, Charset: "UTF-8" },
         },
         Headers: [
-          { Name: 'List-Unsubscribe', Value: `<${msg.unsubscribeUrl}>` },
-          { Name: 'List-Unsubscribe-Post', Value: 'List-Unsubscribe=One-Click' },
+          { Name: "List-Unsubscribe", Value: `<${msg.unsubscribeUrl}>` },
+          {
+            Name: "List-Unsubscribe-Post",
+            Value: "List-Unsubscribe=One-Click",
+          },
         ],
       },
     },
   };
 
   const res = await aws.fetch(endpoint, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
 
@@ -61,5 +64,5 @@ export async function sendEmail(env: Env, msg: OutboundEmail): Promise<string> {
   }
 
   const data = (await res.json()) as { MessageId?: string };
-  return data.MessageId ?? '';
+  return data.MessageId ?? "";
 }

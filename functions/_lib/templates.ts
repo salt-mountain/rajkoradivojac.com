@@ -10,10 +10,10 @@ export interface RenderedEmail {
 
 function escapeHtml(s: string): string {
   return s
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 function layout(opts: {
@@ -36,7 +36,7 @@ function layout(opts: {
             <a href="${opts.unsubscribeUrl}" style="color:#6b7280;">Unsubscribe</a>${
               opts.mailingAddress.trim()
                 ? ` &nbsp;&middot;&nbsp; ${escapeHtml(opts.mailingAddress)}`
-                : ''
+                : ""
             }
           </td></tr>
         </table>
@@ -53,7 +53,8 @@ export function confirmationEmail(opts: {
   unsubscribeUrl: string;
   mailingAddress: string;
 }): RenderedEmail {
-  const { fromName, bookTitle, confirmUrl, unsubscribeUrl, mailingAddress } = opts;
+  const { fromName, bookTitle, confirmUrl, unsubscribeUrl, mailingAddress } =
+    opts;
 
   const subject = bookTitle
     ? `Confirm your email to receive the excerpt of ${bookTitle}`
@@ -90,9 +91,13 @@ export function confirmationEmail(opts: {
     ``,
     `Unsubscribe: ${unsubscribeUrl}`,
     ...(mailingAddress.trim() ? [mailingAddress] : []),
-  ].join('\n');
+  ].join("\n");
 
-  return { subject, html: layout({ fromName, bodyHtml, unsubscribeUrl, mailingAddress }), text };
+  return {
+    subject,
+    html: layout({ fromName, bodyHtml, unsubscribeUrl, mailingAddress }),
+    text,
+  };
 }
 
 export function resubscribeEmail(opts: {
@@ -102,7 +107,13 @@ export function resubscribeEmail(opts: {
   unsubscribeUrl: string;
   mailingAddress: string;
 }): RenderedEmail {
-  const { fromName, bookTitle, resubscribeUrl, unsubscribeUrl, mailingAddress } = opts;
+  const {
+    fromName,
+    bookTitle,
+    resubscribeUrl,
+    unsubscribeUrl,
+    mailingAddress,
+  } = opts;
 
   const subject = bookTitle
     ? `Welcome back — confirm to receive the excerpt of ${bookTitle}`
@@ -140,9 +151,13 @@ export function resubscribeEmail(opts: {
     ``,
     `Unsubscribe: ${unsubscribeUrl}`,
     ...(mailingAddress.trim() ? [mailingAddress] : []),
-  ].join('\n');
+  ].join("\n");
 
-  return { subject, html: layout({ fromName, bodyHtml, unsubscribeUrl, mailingAddress }), text };
+  return {
+    subject,
+    html: layout({ fromName, bodyHtml, unsubscribeUrl, mailingAddress }),
+    text,
+  };
 }
 
 export function excerptEmail(opts: {
@@ -152,7 +167,8 @@ export function excerptEmail(opts: {
   unsubscribeUrl: string;
   mailingAddress: string;
 }): RenderedEmail {
-  const { fromName, bookTitle, downloadUrl, unsubscribeUrl, mailingAddress } = opts;
+  const { fromName, bookTitle, downloadUrl, unsubscribeUrl, mailingAddress } =
+    opts;
 
   const subject = `Your excerpt of ${bookTitle} is ready`;
 
@@ -184,7 +200,11 @@ export function excerptEmail(opts: {
     ``,
     `Unsubscribe: ${unsubscribeUrl}`,
     ...(mailingAddress.trim() ? [mailingAddress] : []),
-  ].join('\n');
+  ].join("\n");
 
-  return { subject, html: layout({ fromName, bodyHtml, unsubscribeUrl, mailingAddress }), text };
+  return {
+    subject,
+    html: layout({ fromName, bodyHtml, unsubscribeUrl, mailingAddress }),
+    text,
+  };
 }

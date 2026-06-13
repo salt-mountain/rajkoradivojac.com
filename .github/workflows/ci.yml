@@ -21,8 +21,7 @@ jobs:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
-        with:
-          bun-version: latest
+        # Bun version comes from .bun-version (pinned), not "latest".
 
       # setup-bun caches the Bun binary, not packages; cache the install cache too.
       - name: Cache Bun install cache
@@ -37,6 +36,20 @@ jobs:
 
       - name: Typecheck Functions
         run: bun run typecheck:functions
+
+      - name: Typecheck (Astro)
+        run: bun run check
+
+      - name: Format check
+        run: bun run format:check
+
+      # The CDK infra app has its own bun.lock / tsconfig — typecheck it too.
+      - name: Install infra deps
+        run: bun install --frozen-lockfile
+        working-directory: infra
+      - name: Typecheck infra
+        run: bun run typecheck
+        working-directory: infra
 
       - name: Unit tests
         run: bun run test

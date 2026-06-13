@@ -1,6 +1,6 @@
-import type { Env, BookRow } from '../_lib/types';
-import { validateEmail, normalizeEmail } from '../_lib/validation';
-import { checkRateLimit } from '../_lib/rate-limit';
+import type { Env, BookRow } from "../_lib/types";
+import { validateEmail, normalizeEmail } from "../_lib/validation";
+import { checkRateLimit } from "../_lib/rate-limit";
 import {
   getActiveBook,
   getSubscriberByEmail,
@@ -8,11 +8,15 @@ import {
   setSubscriberName,
   hasRecentSend,
   insertExcerptRequest,
-} from '../_lib/db';
-import { signActionToken, generateUnsubscribeToken, SEVEN_DAYS_SECONDS } from '../_lib/tokens';
-import { sendEmail } from '../_lib/email';
-import { confirmationEmail, resubscribeEmail } from '../_lib/templates';
-import { deliverExcerpt } from '../_lib/deliver';
+} from "../_lib/db";
+import {
+  signActionToken,
+  generateUnsubscribeToken,
+  SEVEN_DAYS_SECONDS,
+} from "../_lib/tokens";
+import { sendEmail } from "../_lib/email";
+import { confirmationEmail, resubscribeEmail } from "../_lib/templates";
+import { deliverExcerpt } from "../_lib/deliver";
 
 interface SubscribeBody {
   email?: string;
@@ -24,11 +28,11 @@ interface SubscribeBody {
 }
 
 // Public response is ALWAYS this, so subscriber state can't be enumerated.
-const ok = () => Response.json({ status: 'ok' });
+const ok = () => Response.json({ status: "ok" });
 const clientError = (error: string, status = 400) =>
   new Response(JSON.stringify({ error }), {
     status,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { "Content-Type": "application/json" },
   });
 
 export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
@@ -36,20 +40,20 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   try {
     body = await request.json<SubscribeBody>();
   } catch {
-    return clientError('bad_request');
+    return clientError("bad_request");
   }
 
   // Honeypot: a bot filled the hidden field. Pretend success.
   if (body.website?.trim() || body.honeypot?.trim()) return ok();
 
-  const email = normalizeEmail(body.email ?? '');
-  if (!validateEmail(email)) return clientError('invalid_email');
+  const email = normalizeEmail(body.email ?? "");
+  if (!validateEmail(email)) return clientError("invalid_email");
 
-  const ip = request.headers.get('CF-Connecting-IP') ?? 'unknown';
-  const userAgent = request.headers.get('User-Agent');
+  const ip = request.headers.get("CF-Connecting-IP") ?? "unknown";
+  const userAgent = request.headers.get("User-Agent");
 
-  if (!(await checkRateLimit(env.DB, ip, 'subscribe'))) {
-    return clientError('rate_limited', 429);
+  if (!(await checkRateLimit(env.DB, ip, "subscribe"))) {
+    return clientError("rate_limited", 429);
   }
 
   // Optional book. If a slug is given it must be a known active book.
@@ -57,7 +61,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   let book: BookRow | null = null;
   if (bookSlug) {
     book = await getActiveBook(env, bookSlug);
-    if (!book) return clientError('unknown_book');
+    if (!book) return clientError("unknown_book");
   }
   const bookTitle = book?.title ?? null;
 
@@ -88,7 +92,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     // resubscribe" email; only /api/resubscribe flips their state and delivers.
     const exp = Math.floor(Date.now() / 1000) + SEVEN_DAYS_SECONDS;
     const token = await signActionToken(
-      { action: 'resubscribe', sid: sub.id, book: bookSlug, exp },
+      { action: "resubscribe", sid: sub.id, book: bookSlug, exp },
       env.HMAC_SECRET,
     );
     const resubscribeUrl = `${env.SITE_URL}/api/resubscribe?token=${encodeURIComponent(token)}`;
@@ -113,7 +117,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   if (sub.confirmed_at) {
     // Already confirmed -> deliver the excerpt immediately (no second opt-in).
     if (bookSlug && book) {
-      await insertExcerptRequest(env, sub.id, bookSlug, 'confirmed');
+      await insertExcerptRequest(env, sub.id, bookSlug, "confirmed");
       await deliverExcerpt(env, sub, book);
     }
     return ok();
@@ -121,11 +125,11 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
 
   // Not yet confirmed -> double opt-in. Record a pending request (if a book) and
   // send the confirmation email.
-  if (bookSlug) await insertExcerptRequest(env, sub.id, bookSlug, 'pending');
+  if (bookSlug) await insertExcerptRequest(env, sub.id, bookSlug, "pending");
 
   const exp = Math.floor(Date.now() / 1000) + SEVEN_DAYS_SECONDS;
   const token = await signActionToken(
-    { action: 'confirm', sid: sub.id, book: bookSlug, exp },
+    { action: "confirm", sid: sub.id, book: bookSlug, exp },
     env.HMAC_SECRET,
   );
   const confirmUrl = `${env.SITE_URL}/api/confirm?token=${encodeURIComponent(token)}`;

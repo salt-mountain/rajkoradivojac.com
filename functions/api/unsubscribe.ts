@@ -1,12 +1,15 @@
-import type { Env } from '../_lib/types';
-import { getSubscriberByUnsubscribeToken, unsubscribeByToken } from '../_lib/db';
+import type { Env } from "../_lib/types";
+import {
+  getSubscriberByUnsubscribeToken,
+  unsubscribeByToken,
+} from "../_lib/db";
 
 function esc(s: string): string {
   return s
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 function page(title: string, inner: string): Response {
@@ -25,23 +28,36 @@ function page(title: string, inner: string): Response {
   a{color:#5eead4;}
 </style></head>
 <body><div class="card">${inner}</div></body></html>`;
-  return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+  return new Response(html, {
+    headers: { "Content-Type": "text/html; charset=utf-8" },
+  });
 }
 
 // GET /api/unsubscribe?token=... — show a confirm page.
 export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
-  const token = new URL(request.url).searchParams.get('token');
-  if (!token) return page('Unsubscribe', '<h1>Invalid link</h1><p>This unsubscribe link is missing its token.</p>');
+  const token = new URL(request.url).searchParams.get("token");
+  if (!token)
+    return page(
+      "Unsubscribe",
+      "<h1>Invalid link</h1><p>This unsubscribe link is missing its token.</p>",
+    );
 
   const sub = await getSubscriberByUnsubscribeToken(env, token);
-  if (!sub) return page('Unsubscribe', '<h1>Link not found</h1><p>This unsubscribe link is not valid.</p>');
+  if (!sub)
+    return page(
+      "Unsubscribe",
+      "<h1>Link not found</h1><p>This unsubscribe link is not valid.</p>",
+    );
 
   if (sub.unsubscribed_at) {
-    return page('Unsubscribed', `<h1>Already unsubscribed</h1><p><strong>${esc(sub.email)}</strong> is not receiving emails.</p>`);
+    return page(
+      "Unsubscribed",
+      `<h1>Already unsubscribed</h1><p><strong>${esc(sub.email)}</strong> is not receiving emails.</p>`,
+    );
   }
 
   return page(
-    'Confirm unsubscribe',
+    "Confirm unsubscribe",
     `<h1>Unsubscribe?</h1>
      <p>Stop sending emails to <strong>${esc(sub.email)}</strong> from Rajko Radivojac?</p>
      <form method="POST" action="/api/unsubscribe">
@@ -55,29 +71,32 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
 // POST /api/unsubscribe — token via form body OR ?token=. Body
 // `List-Unsubscribe=One-Click` is the RFC 8058 one-click flow mail clients fire.
 export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
-  let token = new URL(request.url).searchParams.get('token');
+  let token = new URL(request.url).searchParams.get("token");
   let oneClick = false;
 
   try {
     const form = await request.formData();
-    token = token ?? (form.get('token') as string | null);
-    if (form.get('List-Unsubscribe') === 'One-Click') oneClick = true;
+    token = token ?? (form.get("token") as string | null);
+    if (form.get("List-Unsubscribe") === "One-Click") oneClick = true;
   } catch {
     // no/!form body — rely on query-string token
   }
 
   if (!token) {
     return oneClick
-      ? new Response('OK', { status: 200 })
-      : page('Unsubscribe', '<h1>Invalid request</h1><p>No unsubscribe token was provided.</p>');
+      ? new Response("OK", { status: 200 })
+      : page(
+          "Unsubscribe",
+          "<h1>Invalid request</h1><p>No unsubscribe token was provided.</p>",
+        );
   }
 
   await unsubscribeByToken(env, token);
 
-  if (oneClick) return new Response('OK', { status: 200 });
+  if (oneClick) return new Response("OK", { status: 200 });
 
   return page(
-    'Unsubscribed',
+    "Unsubscribed",
     `<h1>You're unsubscribed</h1>
      <p>You won't receive any more emails. Changed your mind? Just request an excerpt again on the site.</p>
      <p><a href="${esc(env.SITE_URL)}">Back to rajkoradivojac.com</a></p>`,

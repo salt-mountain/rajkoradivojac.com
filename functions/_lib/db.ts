@@ -4,33 +4,43 @@ import type {
   BookRow,
   SubscriberListRow,
   ExcerptRequestRow,
-} from './types';
+} from "./types";
 
 // ---------------------------------------------------------------------------
 // Admin queries
 // ---------------------------------------------------------------------------
 
-export type SubscriberStatus = 'confirmed' | 'pending' | 'unsubscribed' | 'all';
+export type SubscriberStatus = "confirmed" | "pending" | "unsubscribed" | "all";
 
 export async function listSubscribers(
   env: Env,
-  opts: { status: SubscriberStatus; search: string | null; limit: number; offset: number },
+  opts: {
+    status: SubscriberStatus;
+    search: string | null;
+    limit: number;
+    offset: number;
+  },
 ): Promise<{ rows: SubscriberListRow[]; total: number }> {
   const where: string[] = [];
   const binds: unknown[] = [];
 
-  if (opts.status === 'confirmed') where.push('confirmed_at IS NOT NULL AND unsubscribed_at IS NULL');
-  else if (opts.status === 'pending') where.push('confirmed_at IS NULL AND unsubscribed_at IS NULL');
-  else if (opts.status === 'unsubscribed') where.push('unsubscribed_at IS NOT NULL');
+  if (opts.status === "confirmed")
+    where.push("confirmed_at IS NOT NULL AND unsubscribed_at IS NULL");
+  else if (opts.status === "pending")
+    where.push("confirmed_at IS NULL AND unsubscribed_at IS NULL");
+  else if (opts.status === "unsubscribed")
+    where.push("unsubscribed_at IS NOT NULL");
 
   if (opts.search) {
-    where.push('(email LIKE ? OR name LIKE ?)');
+    where.push("(email LIKE ? OR name LIKE ?)");
     binds.push(`%${opts.search}%`, `%${opts.search}%`);
   }
 
-  const whereSql = where.length ? `WHERE ${where.join(' AND ')}` : '';
+  const whereSql = where.length ? `WHERE ${where.join(" AND ")}` : "";
 
-  const totalRow = await env.DB.prepare(`SELECT count(*) AS n FROM subscribers ${whereSql}`)
+  const totalRow = await env.DB.prepare(
+    `SELECT count(*) AS n FROM subscribers ${whereSql}`,
+  )
     .bind(...binds)
     .first<{ n: number }>();
 
@@ -49,11 +59,14 @@ export async function listSubscribers(
 export async function getSubscriberWithRequests(
   env: Env,
   id: number,
-): Promise<{ subscriber: SubscriberRow; requests: ExcerptRequestRow[] } | null> {
+): Promise<{
+  subscriber: SubscriberRow;
+  requests: ExcerptRequestRow[];
+} | null> {
   const subscriber = await getSubscriberById(env, id);
   if (!subscriber) return null;
   const requests = await env.DB.prepare(
-    'SELECT * FROM excerpt_requests WHERE subscriber_id = ? ORDER BY id DESC',
+    "SELECT * FROM excerpt_requests WHERE subscriber_id = ? ORDER BY id DESC",
   )
     .bind(id)
     .all<ExcerptRequestRow>();
@@ -118,9 +131,13 @@ export async function adminAddSubscriber(
 export async function deleteSubscriber(env: Env, id: number): Promise<void> {
   // D1 doesn't enforce FK ON DELETE CASCADE by default, so remove children explicitly.
   await env.DB.batch([
-    env.DB.prepare('DELETE FROM excerpt_requests WHERE subscriber_id = ?').bind(id),
-    env.DB.prepare('DELETE FROM broadcast_sends WHERE subscriber_id = ?').bind(id),
-    env.DB.prepare('DELETE FROM subscribers WHERE id = ?').bind(id),
+    env.DB.prepare("DELETE FROM excerpt_requests WHERE subscriber_id = ?").bind(
+      id,
+    ),
+    env.DB.prepare("DELETE FROM broadcast_sends WHERE subscriber_id = ?").bind(
+      id,
+    ),
+    env.DB.prepare("DELETE FROM subscribers WHERE id = ?").bind(id),
   ]);
 }
 
@@ -164,9 +181,12 @@ export async function suppressEmail(env: Env, email: string): Promise<void> {
     .run();
 }
 
-export async function getActiveBook(env: Env, slug: string): Promise<BookRow | null> {
+export async function getActiveBook(
+  env: Env,
+  slug: string,
+): Promise<BookRow | null> {
   return env.DB.prepare(
-    'SELECT slug, title, excerpt_pdf_key, active FROM books WHERE slug = ? AND active = 1',
+    "SELECT slug, title, excerpt_pdf_key, active FROM books WHERE slug = ? AND active = 1",
   )
     .bind(slug)
     .first<BookRow>();
@@ -176,7 +196,7 @@ export async function getSubscriberByEmail(
   env: Env,
   email: string,
 ): Promise<SubscriberRow | null> {
-  return env.DB.prepare('SELECT * FROM subscribers WHERE email = ?')
+  return env.DB.prepare("SELECT * FROM subscribers WHERE email = ?")
     .bind(email)
     .first<SubscriberRow>();
 }
@@ -185,13 +205,16 @@ export async function getSubscriberByUnsubscribeToken(
   env: Env,
   token: string,
 ): Promise<SubscriberRow | null> {
-  return env.DB.prepare('SELECT * FROM subscribers WHERE unsubscribe_token = ?')
+  return env.DB.prepare("SELECT * FROM subscribers WHERE unsubscribe_token = ?")
     .bind(token)
     .first<SubscriberRow>();
 }
 
-export async function getSubscriberById(env: Env, id: number): Promise<SubscriberRow | null> {
-  return env.DB.prepare('SELECT * FROM subscribers WHERE id = ?')
+export async function getSubscriberById(
+  env: Env,
+  id: number,
+): Promise<SubscriberRow | null> {
+  return env.DB.prepare("SELECT * FROM subscribers WHERE id = ?")
     .bind(id)
     .first<SubscriberRow>();
 }
@@ -218,8 +241,14 @@ export async function insertSubscriber(
   return row as SubscriberRow;
 }
 
-export async function setSubscriberName(env: Env, id: number, name: string): Promise<void> {
-  await env.DB.prepare('UPDATE subscribers SET name = ? WHERE id = ? AND name IS NULL')
+export async function setSubscriberName(
+  env: Env,
+  id: number,
+  name: string,
+): Promise<void> {
+  await env.DB.prepare(
+    "UPDATE subscribers SET name = ? WHERE id = ? AND name IS NULL",
+  )
     .bind(name, id)
     .run();
 }
@@ -246,16 +275,19 @@ export async function insertExcerptRequest(
   env: Env,
   subscriberId: number,
   bookSlug: string,
-  status: 'pending' | 'confirmed' | 'sent' | 'failed',
+  status: "pending" | "confirmed" | "sent" | "failed",
 ): Promise<void> {
   await env.DB.prepare(
-    'INSERT INTO excerpt_requests (subscriber_id, book_slug, status) VALUES (?, ?, ?)',
+    "INSERT INTO excerpt_requests (subscriber_id, book_slug, status) VALUES (?, ?, ?)",
   )
     .bind(subscriberId, bookSlug, status)
     .run();
 }
 
-export async function unsubscribeByToken(env: Env, token: string): Promise<void> {
+export async function unsubscribeByToken(
+  env: Env,
+  token: string,
+): Promise<void> {
   await env.DB.prepare(
     `UPDATE subscribers SET unsubscribed_at = datetime('now') WHERE unsubscribe_token = ?`,
   )
@@ -274,7 +306,10 @@ export async function resubscribe(env: Env, id: number): Promise<void> {
     .run();
 }
 
-export async function markSubscriberConfirmed(env: Env, id: number): Promise<void> {
+export async function markSubscriberConfirmed(
+  env: Env,
+  id: number,
+): Promise<void> {
   await env.DB.prepare(
     `UPDATE subscribers SET confirmed_at = datetime('now') WHERE id = ? AND confirmed_at IS NULL`,
   )
@@ -298,8 +333,7 @@ export async function confirmExcerptRequest(
 }
 
 // Update the most recent not-yet-sent request for this (subscriber, book).
-const LATEST_OPEN_REQUEST =
-  `(SELECT id FROM excerpt_requests
+const LATEST_OPEN_REQUEST = `(SELECT id FROM excerpt_requests
     WHERE subscriber_id = ? AND book_slug = ? AND status IN ('pending', 'confirmed')
     ORDER BY id DESC LIMIT 1)`;
 
