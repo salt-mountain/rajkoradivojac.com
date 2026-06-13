@@ -1,5 +1,5 @@
 ---
-import type { Book } from '../data/books';
+import type { Book } from "../data/books";
 
 interface Props {
   book: Book;
@@ -10,7 +10,9 @@ interface Props {
 const { book, index, sectionTitle } = Astro.props;
 const isEven = index % 2 === 0;
 
-const fullTitle = book.subtitle ? `${book.title}: ${book.subtitle}` : book.title;
+const fullTitle = book.subtitle
+  ? `${book.title}: ${book.subtitle}`
+  : book.title;
 const boldText = book.boldInDescription || fullTitle;
 const hasBoldInDescription = book.description.includes(boldText);
 ---
@@ -18,26 +20,28 @@ const hasBoldInDescription = book.description.includes(boldText);
 <section
   id={book.id}
   class:list={[
-    'px-4 sm:px-6',
-    sectionTitle ? 'pt-16 pb-24' : 'py-24',
-    index % 2 === 0 ? 'bg-navy-950' : 'bg-navy-900',
+    "px-4 sm:px-6",
+    sectionTitle ? "pt-16 pb-24" : "py-24",
+    index % 2 === 0 ? "bg-navy-950" : "bg-navy-900",
   ]}
 >
-  {sectionTitle && (
-    <div class="max-w-6xl mx-auto mb-16 text-center">
-      <div class="flex items-center justify-center gap-4">
-        <span class="h-px w-12 bg-primary/40"></span>
-        <h3 class="text-primary text-xs sm:text-sm font-semibold uppercase tracking-[0.25em]">
-          {sectionTitle}
-        </h3>
-        <span class="h-px w-12 bg-primary/40"></span>
+  {
+    sectionTitle && (
+      <div class="max-w-6xl mx-auto mb-16 text-center">
+        <div class="flex items-center justify-center gap-4">
+          <span class="h-px w-12 bg-primary/40" />
+          <h3 class="text-primary text-xs sm:text-sm font-semibold uppercase tracking-[0.25em]">
+            {sectionTitle}
+          </h3>
+          <span class="h-px w-12 bg-primary/40" />
+        </div>
       </div>
-    </div>
-  )}
+    )
+  }
   <div
     class:list={[
-      'max-w-6xl mx-auto flex flex-col gap-12 items-center',
-      isEven ? 'md:flex-row' : 'md:flex-row-reverse',
+      "max-w-6xl mx-auto flex flex-col gap-12 items-center",
+      isEven ? "md:flex-row" : "md:flex-row-reverse",
     ]}
   >
     <!-- Book cover -->
@@ -47,7 +51,7 @@ const hasBoldInDescription = book.description.includes(boldText);
           src={book.coverImage}
           alt={`Cover of ${book.title}`}
           class="w-full rounded-lg shadow-2xl transition-transform duration-500 group-hover:scale-105"
-          style={`transform: rotateY(${isEven ? '-5' : '5'}deg);`}
+          style={`transform: rotateY(${isEven ? "-5" : "5"}deg);`}
           loading="lazy"
         />
       </div>
@@ -58,93 +62,148 @@ const hasBoldInDescription = book.description.includes(boldText);
       <h2 class="font-serif text-3xl sm:text-4xl font-bold text-white mb-2">
         {book.title}
       </h2>
-      {book.subtitle && (
-        <p class="text-primary font-serif italic text-lg mb-4">{book.subtitle}</p>
-      )}
-      {book.inDevelopment && (
-        <div class="inline-flex items-center gap-2 px-3 py-1.5 mb-4 rounded-full border border-primary/40 bg-primary/10">
-          <span class="relative flex h-2.5 w-2.5">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
-          </span>
-          <span class="text-primary text-xs font-semibold uppercase tracking-wider">Currently in Development</span>
-        </div>
-      )}
-      {book.description.includes('\n\n') ? (
-        book.description.split('\n\n').map((paragraph: string) => {
-          const lines = paragraph.split('\n');
-          const isList = lines.length > 1 && lines.every((l) => l.startsWith('- '));
-          if (isList) {
+      {
+        book.subtitle && (
+          <p class="text-primary font-serif italic text-lg mb-4">
+            {book.subtitle}
+          </p>
+        )
+      }
+      {
+        book.inDevelopment && (
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 mb-4 rounded-full border border-primary/40 bg-primary/10">
+            <span class="relative flex h-2.5 w-2.5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary" />
+            </span>
+            <span class="text-primary text-xs font-semibold uppercase tracking-wider">
+              Currently in Development
+            </span>
+          </div>
+        )
+      }
+      {
+        book.description.includes("\n\n") ? (
+          book.description.split("\n\n").map((paragraph: string) => {
+            const lines = paragraph.split("\n");
+            const isList =
+              lines.length > 1 && lines.every((l) => l.startsWith("- "));
+            if (isList) {
+              return (
+                <ul class="list-disc list-outside pl-5 text-gray-300 leading-relaxed mb-4 space-y-1">
+                  {lines.map((l) => (
+                    <li>{l.slice(2)}</li>
+                  ))}
+                </ul>
+              );
+            }
             return (
-              <ul class="list-disc list-outside pl-5 text-gray-300 leading-relaxed mb-4 space-y-1">
-                {lines.map((l) => <li>{l.slice(2)}</li>)}
-              </ul>
+              <p class="text-gray-300 leading-relaxed mb-4">
+                {hasBoldInDescription && paragraph.includes(boldText) ? (
+                  <Fragment>
+                    {paragraph.split(boldText)[0]}
+                    <strong class="text-white">{boldText}</strong>
+                    {paragraph.split(boldText)[1]}
+                  </Fragment>
+                ) : (
+                  paragraph
+                )}
+              </p>
             );
-          }
-          return (
-            <p class="text-gray-300 leading-relaxed mb-4">
-              {hasBoldInDescription && paragraph.includes(boldText) ? (
-                <Fragment>
-                  {paragraph.split(boldText)[0]}<strong class="text-white">{boldText}</strong>{paragraph.split(boldText)[1]}
-                </Fragment>
-              ) : paragraph}
-            </p>
-          );
-        })
-      ) : (
-        <p class="text-gray-300 leading-relaxed mb-8">
-          {hasBoldInDescription ? (
-            <Fragment>
-              {book.description.split(boldText)[0]}<strong class="text-white">{boldText}</strong>{book.description.split(boldText)[1]}
-            </Fragment>
-          ) : book.description}
-        </p>
-      )}
+          })
+        ) : (
+          <p class="text-gray-300 leading-relaxed mb-8">
+            {hasBoldInDescription ? (
+              <Fragment>
+                {book.description.split(boldText)[0]}
+                <strong class="text-white">{boldText}</strong>
+                {book.description.split(boldText)[1]}
+              </Fragment>
+            ) : (
+              book.description
+            )}
+          </p>
+        )
+      }
 
       <div class="flex flex-wrap gap-4 mt-4">
-        {book.hasExcerpt && (
-          <button
-            class="excerpt-btn inline-flex items-center justify-center px-6 py-3 border border-primary text-primary font-semibold uppercase tracking-wider text-sm rounded hover:bg-primary hover:text-navy-950 transition-colors duration-200"
-            data-excerpt-book={book.slug}
-            data-excerpt-title={book.title}
-          >
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
-            Free Excerpt
-          </button>
-        )}
-
-        {book.inDevelopment ? (
-          <a
-            href="#newsletter"
-            class="inline-flex items-center justify-center px-6 py-3 bg-primary text-navy-950 font-semibold uppercase tracking-wider text-sm rounded hover:bg-accent transition-colors duration-200"
-          >
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
-            Get Notified When Available
-          </a>
-        ) : (
-          book.buyLinks.map((link, i) => (
-            <a
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              class:list={[
-                'inline-flex items-center justify-center px-6 py-3 font-semibold uppercase tracking-wider text-sm rounded transition-colors duration-200',
-                i === 0
-                  ? 'bg-primary text-navy-950 hover:bg-accent'
-                  : 'border border-primary text-primary hover:bg-primary hover:text-navy-950',
-              ]}
+        {
+          book.hasExcerpt && (
+            <button
+              class="excerpt-btn inline-flex items-center justify-center px-6 py-3 border border-primary text-primary font-semibold uppercase tracking-wider text-sm rounded hover:bg-primary hover:text-navy-950 transition-colors duration-200"
+              data-excerpt-book={book.slug}
+              data-excerpt-title={book.title}
             >
-              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
+              <svg
+                class="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                />
               </svg>
-              {link.store}
+              Free Excerpt
+            </button>
+          )
+        }
+
+        {
+          book.inDevelopment ? (
+            <a
+              href="#newsletter"
+              class="inline-flex items-center justify-center px-6 py-3 bg-primary text-navy-950 font-semibold uppercase tracking-wider text-sm rounded hover:bg-accent transition-colors duration-200"
+            >
+              <svg
+                class="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                />
+              </svg>
+              Get Notified When Available
             </a>
-          ))
-        )}
+          ) : (
+            book.buyLinks.map((link, i) => (
+              <a
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class:list={[
+                  "inline-flex items-center justify-center px-6 py-3 font-semibold uppercase tracking-wider text-sm rounded transition-colors duration-200",
+                  i === 0
+                    ? "bg-primary text-navy-950 hover:bg-accent"
+                    : "border border-primary text-primary hover:bg-primary hover:text-navy-950",
+                ]}
+              >
+                <svg
+                  class="w-5 h-5 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"
+                  />
+                </svg>
+                {link.store}
+              </a>
+            ))
+          )
+        }
       </div>
     </div>
   </div>

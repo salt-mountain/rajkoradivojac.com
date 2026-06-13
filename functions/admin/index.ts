@@ -1,5 +1,5 @@
-import type { Env } from '../_lib/types';
-import { requireAdmin } from '../_lib/admin-auth';
+import type { Env } from "../_lib/types";
+import { requireAdmin } from "../_lib/admin-auth";
 
 // GET /admin — single-file dashboard. Gated by Cloudflare Access (and the header
 // check here as a fail-closed backstop). Data comes from the /api/admin/* endpoints,
@@ -7,13 +7,13 @@ import { requireAdmin } from '../_lib/admin-auth';
 export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   const auth = await requireAdmin(request, env);
   if (auth instanceof Response) {
-    return new Response('Forbidden - this page requires admin access.', {
+    return new Response("Forbidden - this page requires admin access.", {
       status: 403,
-      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+      headers: { "Content-Type": "text/plain; charset=utf-8" },
     });
   }
   return new Response(html(auth.email), {
-    headers: { 'Content-Type': 'text/html; charset=utf-8' },
+    headers: { "Content-Type": "text/html; charset=utf-8" },
   });
 };
 

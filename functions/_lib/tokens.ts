@@ -2,7 +2,7 @@
 // random per-subscriber unsubscribe token. All crypto uses Web Crypto (SubtleCrypto),
 // which is available both in the Workers runtime and in Node for tests.
 
-export type ActionType = 'confirm' | 'resubscribe';
+export type ActionType = "confirm" | "resubscribe";
 
 export interface ActionTokenPayload {
   action: ActionType;
@@ -17,15 +17,18 @@ const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
 function bytesToBase64Url(bytes: Uint8Array): string {
-  let binary = '';
+  let binary = "";
   for (const b of bytes) binary += String.fromCharCode(b);
-  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  return btoa(binary)
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
 }
 
 function base64UrlToBytes(input: string): Uint8Array {
-  let s = input.replace(/-/g, '+').replace(/_/g, '/');
+  let s = input.replace(/-/g, "+").replace(/_/g, "/");
   const pad = s.length % 4;
-  if (pad) s += '='.repeat(4 - pad);
+  if (pad) s += "=".repeat(4 - pad);
   const binary = atob(s);
   const bytes = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
@@ -34,11 +37,11 @@ function base64UrlToBytes(input: string): Uint8Array {
 
 async function hmacKey(secret: string): Promise<CryptoKey> {
   return crypto.subtle.importKey(
-    'raw',
+    "raw",
     encoder.encode(secret),
-    { name: 'HMAC', hash: 'SHA-256' },
+    { name: "HMAC", hash: "SHA-256" },
     false,
-    ['sign', 'verify'],
+    ["sign", "verify"],
   );
 }
 
@@ -48,7 +51,7 @@ export async function signActionToken(
 ): Promise<string> {
   const body = bytesToBase64Url(encoder.encode(JSON.stringify(payload)));
   const key = await hmacKey(secret);
-  const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(body));
+  const sig = await crypto.subtle.sign("HMAC", key, encoder.encode(body));
   return `${body}.${bytesToBase64Url(new Uint8Array(sig))}`;
 }
 
@@ -60,14 +63,19 @@ export async function verifyActionToken(
   token: string,
   secret: string,
 ): Promise<ActionTokenPayload | null> {
-  const parts = token.split('.');
+  const parts = token.split(".");
   if (parts.length !== 2) return null;
   const [body, sig] = parts;
 
   let valid: boolean;
   try {
     const key = await hmacKey(secret);
-    valid = await crypto.subtle.verify('HMAC', key, base64UrlToBytes(sig), encoder.encode(body));
+    valid = await crypto.subtle.verify(
+      "HMAC",
+      key,
+      base64UrlToBytes(sig),
+      encoder.encode(body),
+    );
   } catch {
     return null;
   }
@@ -80,9 +88,14 @@ export async function verifyActionToken(
     return null;
   }
 
-  if (payload.action !== 'confirm' && payload.action !== 'resubscribe') return null;
-  if (typeof payload.sid !== 'number') return null;
-  if (typeof payload.exp !== 'number' || payload.exp < Math.floor(Date.now() / 1000)) return null;
+  if (payload.action !== "confirm" && payload.action !== "resubscribe")
+    return null;
+  if (typeof payload.sid !== "number") return null;
+  if (
+    typeof payload.exp !== "number" ||
+    payload.exp < Math.floor(Date.now() / 1000)
+  )
+    return null;
 
   return payload;
 }

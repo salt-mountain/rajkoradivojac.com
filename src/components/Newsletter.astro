@@ -1,4 +1,5 @@
 ---
+
 ---
 
 <section id="newsletter" class="py-24 px-4 sm:px-6 bg-navy-950">
@@ -7,11 +8,15 @@
       Stay in Touch
     </h2>
     <p class="text-gray-400 mb-8 leading-relaxed">
-      Join Rajko's mailing list for updates on new releases, events, and exclusive
-      content. Be the first to know when a new book is on the way.
+      Join Rajko's mailing list for updates on new releases, events, and
+      exclusive content. Be the first to know when a new book is on the way.
     </p>
 
-    <form id="newsletter-form" class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto" novalidate>
+    <form
+      id="newsletter-form"
+      class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto"
+      novalidate
+    >
       <input
         type="email"
         name="email"
@@ -58,42 +63,46 @@
 </section>
 
 <script>
-  const form = document.getElementById('newsletter-form') as HTMLFormElement | null;
-  const message = document.getElementById('newsletter-message');
-  const submitBtn = document.getElementById('newsletter-submit') as HTMLButtonElement | null;
+  const form = document.getElementById(
+    "newsletter-form",
+  ) as HTMLFormElement | null;
+  const message = document.getElementById("newsletter-message");
+  const submitBtn = document.getElementById(
+    "newsletter-submit",
+  ) as HTMLButtonElement | null;
 
   function show(text: string, ok: boolean) {
     if (!message) return;
     message.textContent = text;
-    message.classList.remove('hidden', 'text-green-400', 'text-red-400');
-    message.classList.add(ok ? 'text-green-400' : 'text-red-400');
+    message.classList.remove("hidden", "text-green-400", "text-red-400");
+    message.classList.add(ok ? "text-green-400" : "text-red-400");
   }
 
-  form?.addEventListener('submit', async (e) => {
+  form?.addEventListener("submit", async (e) => {
     e.preventDefault();
     if (!form) return;
 
     const data = new FormData(form);
-    const email = String(data.get('email') ?? '').trim();
-    const website = String(data.get('website') ?? '');
+    const email = String(data.get("email") ?? "").trim();
+    const website = String(data.get("website") ?? "");
     if (!email) {
-      show('Please enter your email.', false);
+      show("Please enter your email.", false);
       return;
     }
 
     if (submitBtn) submitBtn.disabled = true;
     try {
       // No book_slug -> general newsletter signup (double opt-in, no excerpt).
-      const res = await fetch('/api/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, website }),
       });
-      if (res.status >= 500) throw new Error('server');
+      if (res.status >= 500) throw new Error("server");
       form.reset();
       show("Almost there! Check your inbox for a confirmation link.", true);
     } catch {
-      show('Something went wrong. Please try again in a moment.', false);
+      show("Something went wrong. Please try again in a moment.", false);
     } finally {
       if (submitBtn) submitBtn.disabled = false;
     }

@@ -1,9 +1,9 @@
-import type { Env } from '../../_lib/types';
-import { requireAdmin } from '../../_lib/admin-auth';
-import { listSubscribers } from '../../_lib/db';
+import type { Env } from "../../_lib/types";
+import { requireAdmin } from "../../_lib/admin-auth";
+import { listSubscribers } from "../../_lib/db";
 
 function cell(v: unknown): string {
-  const s = v == null ? '' : String(v);
+  const s = v == null ? "" : String(v);
   return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
 
@@ -13,22 +13,22 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   if (auth instanceof Response) return auth;
 
   const { rows } = await listSubscribers(env, {
-    status: 'all',
+    status: "all",
     search: null,
     limit: 100000,
     offset: 0,
   });
 
   const header = [
-    'email',
-    'name',
-    'confirmed_at',
-    'unsubscribed_at',
-    'source_book',
-    'request_count',
-    'created_at',
+    "email",
+    "name",
+    "confirmed_at",
+    "unsubscribed_at",
+    "source_book",
+    "request_count",
+    "created_at",
   ];
-  const lines = [header.join(',')];
+  const lines = [header.join(",")];
   for (const r of rows) {
     lines.push(
       [
@@ -41,14 +41,14 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
         r.created_at,
       ]
         .map(cell)
-        .join(','),
+        .join(","),
     );
   }
 
-  return new Response(lines.join('\n'), {
+  return new Response(lines.join("\n"), {
     headers: {
-      'Content-Type': 'text/csv; charset=utf-8',
-      'Content-Disposition': 'attachment; filename="subscribers.csv"',
+      "Content-Type": "text/csv; charset=utf-8",
+      "Content-Disposition": 'attachment; filename="subscribers.csv"',
     },
   });
 };

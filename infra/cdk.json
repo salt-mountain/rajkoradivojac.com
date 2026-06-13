@@ -2,7 +2,14 @@
   "app": "bun bin/app.ts",
   "watch": {
     "include": ["**"],
-    "exclude": ["README.md", "cdk*.json", "**/*.d.ts", "node_modules", "cdk.out", "cdk-outputs.json"]
+    "exclude": [
+      "README.md",
+      "cdk*.json",
+      "**/*.d.ts",
+      "node_modules",
+      "cdk.out",
+      "cdk-outputs.json"
+    ]
   },
   "context": {
     "domainName": "rajkoradivojac.com",
