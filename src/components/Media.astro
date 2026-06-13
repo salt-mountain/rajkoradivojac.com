@@ -150,7 +150,7 @@ const blurb =
 
       {
         clips.map((clip) => (
-          <article class="media-card" data-type="video">
+          <article class="media-card" data-type={clip.type ?? "video"}>
             <button
               type="button"
               class="clip-trigger group block w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
@@ -178,7 +178,11 @@ const blurb =
                   </div>
                 </div>
                 <span class="absolute top-3 left-3 px-2.5 py-1 rounded bg-navy-950/85 text-primary text-[10px] font-semibold uppercase tracking-widest">
-                  Video
+                  {clip.type === "tv"
+                    ? "TV"
+                    : clip.type === "lecture"
+                      ? "Lecture"
+                      : "Video"}
                 </span>
               </div>
               <div class="mt-4">
