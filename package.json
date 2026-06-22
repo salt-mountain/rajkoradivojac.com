@@ -22,7 +22,7 @@
     "@tailwindcss/vite": "^4.3.1",
     "astro": "6.4.7",
     "aws4fetch": "^1.0.20",
-    "tailwindcss": "4.3.0"
+    "tailwindcss": "4.3.1"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
