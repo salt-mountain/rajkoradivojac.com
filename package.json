@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.1",
-    "astro": "6.4.7",
+    "astro": "6.4.8",
     "aws4fetch": "^1.0.20",
     "tailwindcss": "4.3.1"
   },
