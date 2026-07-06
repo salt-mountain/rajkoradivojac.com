@@ -27,7 +27,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "@cloudflare/workers-types": "^4.20260626.1",
-    "prettier": "^3.8.4",
+    "prettier": "^3.9.3",
     "prettier-plugin-astro": "^0.14.1",
     "typescript": "^6.0.3",
     "vitest": "^4.1.9"
