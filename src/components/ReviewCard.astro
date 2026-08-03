@@ -1,0 +1,62 @@
+---
+import type { BookReview } from "../data/books";
+
+interface Props {
+  review: BookReview;
+  /** Book title shown in the "Review: <title>" label. */
+  bookTitle?: string;
+}
+
+const { review, bookTitle } = Astro.props;
+
+const reviewLabel = bookTitle ? `Review: ${bookTitle}` : "Review";
+---
+
+<figure
+  class="relative mb-8 rounded-xl border border-primary/30 bg-gradient-to-br from-primary/10 to-transparent p-6 sm:p-7 shadow-lg"
+>
+  <span
+    class="pointer-events-none absolute top-2 left-4 font-serif text-6xl leading-none text-primary/30 select-none"
+    aria-hidden="true"
+  >
+    &ldquo;
+  </span>
+  <div class="mb-4 flex flex-wrap items-center gap-x-3 gap-y-2">
+    <div class="inline-flex items-center gap-2">
+      <span class="h-px w-6 flex-shrink-0 bg-primary/50"></span>
+      <span
+        class="text-primary text-[0.65rem] font-semibold uppercase tracking-[0.15em]"
+      >
+        {reviewLabel}
+      </span>
+    </div>
+    <div
+      class="flex items-center gap-0.5 text-primary"
+      aria-label="5 out of 5 stars"
+    >
+      {
+        [0, 1, 2, 3, 4].map(() => (
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.959a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.368 2.447a1 1 0 00-.364 1.118l1.287 3.958c.3.922-.755 1.688-1.54 1.118l-3.367-2.446a1 1 0 00-1.176 0l-3.367 2.446c-.784.57-1.838-.196-1.539-1.118l1.287-3.958a1 1 0 00-.364-1.118L2.346 9.386c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.959z" />
+          </svg>
+        ))
+      }
+    </div>
+  </div>
+  <blockquote
+    class="relative font-serif italic text-gray-200 leading-relaxed"
+  >
+    {review.quote}
+  </blockquote>
+  <figcaption class="mt-5 flex items-center gap-3 not-italic">
+    <span class="h-8 w-px bg-primary/40"></span>
+    <span>
+      <span class="block text-white font-semibold">{review.author}</span>
+      {
+        review.title && (
+          <span class="block text-gray-400 text-sm">{review.title}</span>
+        )
+      }
+    </span>
+  </figcaption>
+</figure>
