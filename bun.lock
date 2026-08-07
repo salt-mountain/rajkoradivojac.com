@@ -12,7 +12,7 @@
       },
       "devDependencies": {
         "@astrojs/check": "^0.9.10",
-        "@cloudflare/workers-types": "^5.20260730.1",
+        "@cloudflare/workers-types": "^5.20260731.1",
         "prettier": "^3.9.6",
         "prettier-plugin-astro": "^0.14.1",
         "typescript": "^6.0.3",
@@ -91,7 +91,7 @@
 
     "@clack/prompts": ["@clack/prompts@1.1.0", "", { "dependencies": { "@clack/core": "1.1.0", "sisteransi": "^1.0.5" } }, "sha512-pkqbPGtohJAvm4Dphs2M8xE29ggupihHdy1x84HNojZuMtFsHiUlRvqD24tM2+XmI+61LlfNceM3Wr7U5QES5g=="],
 
-    "@cloudflare/workers-types": ["@cloudflare/workers-types@5.20260730.1", "", {}, "sha512-3e1cBXcPTwXBk2ur0CfxZKQKL6X7vUZlOn1R7VYU0zZVJcSKFcq1AoOZM+ps0LuL0uTAxdcLg+qwXrBXVu+UuQ=="],
+    "@cloudflare/workers-types": ["@cloudflare/workers-types@5.20260731.1", "", {}, "sha512-ly+eua642FCR2nbQGi/OxqlVaJI3fNdyqK7G4u6jWCAZ4WYhOBvZWyf0M7s5zurWbNQW3YjelOxuKqR0zYK90w=="],
 
     "@emmetio/abbreviation": ["@emmetio/abbreviation@2.3.3", "", { "dependencies": { "@emmetio/scanner": "^1.0.4" } }, "sha512-mgv58UrU3rh4YgbE/TzgLQwJ3pFsHHhCLqY20aJq+9comytTXUDNGG/SMtSeMJdkpxgXSXunBGLD8Boka3JyVA=="],
 
