@@ -1,5 +1,6 @@
 ---
 import type { Book } from "../data/books";
+import ReviewCard from "./ReviewCard.astro";
 
 interface Props {
   book: Book;
@@ -80,6 +81,11 @@ const hasBoldInDescription = book.description.includes(boldText);
               Currently in Development
             </span>
           </div>
+        )
+      }
+      {
+        book.review && (
+          <ReviewCard review={book.review} bookTitle={book.title} />
         )
       }
       {

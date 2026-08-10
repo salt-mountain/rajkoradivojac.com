@@ -5,6 +5,13 @@ export interface BuyLink {
 
 export type BookCategory = "beekeeping" | "children" | "coloring";
 
+export interface BookReview {
+  quote: string;
+  author: string;
+  /** Reviewer credential / title, shown under the name. */
+  title?: string;
+}
+
 export interface Book {
   id: string;
   /** Public slug used for excerpt requests + R2 keys; set on books that have an excerpt. */
@@ -19,6 +26,8 @@ export interface Book {
   hasExcerpt: boolean;
   excerptDescription?: string;
   inDevelopment?: boolean;
+  /** Featured review / endorsement, highlighted in the book section. */
+  review?: BookReview;
 }
 
 export const books: Book[] = [
@@ -33,6 +42,12 @@ export const books: Book[] = [
     buyLinks: [],
     hasExcerpt: false,
     inDevelopment: true,
+    review: {
+      quote:
+        "There are many books available for people interested in beekeeping, but this one stands out as an excellent resource for beginners. The information is accurate, well organized, and presented in a way that is easy to read and understand. The accompanying photographs complement the text and help guide readers through each topic, making complex concepts easier to grasp. What I appreciated most was the author's honest, practical approach. He shares his extensive experience with humility and kindness, offering clear guidance that makes you feel as though you are sitting across the table having a conversation with him. I highly recommend this book to anyone who is new to beekeeping and looking for a reliable, approachable guide to getting started.",
+      author: "Jennifer Berry, PhD",
+      title: "Adjunct Professor, Research Professional — UGA Bee Lab",
+    },
   },
   {
     id: "book-8",
