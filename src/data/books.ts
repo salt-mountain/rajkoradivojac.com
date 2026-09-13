@@ -19,13 +19,16 @@ export interface Book {
   title: string;
   subtitle?: string;
   description: string;
-  boldInDescription?: string;
+  /** Phrase(s) in the description to bold. Defaults to the book's full title. */
+  boldInDescription?: string | string[];
   coverImage: string;
   category: BookCategory;
   buyLinks: BuyLink[];
   hasExcerpt: boolean;
   excerptDescription?: string;
   inDevelopment?: boolean;
+  /** Publisher name; when set, the section shows a "Published by …" badge. */
+  publisher?: string;
   /** Featured review / endorsement, highlighted in the book section. */
   review?: BookReview;
 }
@@ -36,12 +39,26 @@ export const books: Book[] = [
     title: "From First Hive to Honey Harvest",
     subtitle: "An Illustrated, Practical Guide for Beginners",
     description:
-      "From First Hive to Honey Harvest: An Illustrated, Practical Guide for Beginners is a beginner-friendly beekeeping guide that helps new beekeepers build a strong foundation before expecting their first honey harvest. Drawing on the author's firsthand apiary experience, the book offers clear, practical instruction on the essential early stages of beekeeping, including choosing an apiary location, obtaining healthy bees, selecting and preparing hives, understanding colony life, and managing bees through the seasons.\n\nWritten for readers with more questions than answers, the book emphasizes realistic expectations, careful observation, and steady learning rather than quick results. With more than 230 photographs supporting the instruction throughout, it provides an accessible, visually guided path from the first decision to keep bees to the knowledge and habits needed for a successful harvest.",
+      "Beekeeping begins with curiosity. Confidence comes from knowing what to do, when to do it, and why. Drawing on nearly three decades of hands-on experience, Rajko Radivojac offers clear, practical guidance for those taking their first steps in beekeeping. More than 250 original photographs make essential knowledge easier to understand and apply—helping beginners make sound decisions, avoid common mistakes, care for their colonies responsibly, and develop skills they will use from their first honey harvest onward. Honest, reassuring, and grounded in real apiary work, From First Hive to Honey Harvest is a guide to keep close as questions arise and experience grows.",
+    boldInDescription: ["From First Hive to Honey Harvest", "Rajko Radivojac"],
     coverImage: "/images/book-1-cover.jpg",
     category: "beekeeping",
-    buyLinks: [],
+    buyLinks: [
+      {
+        store: "Amazon",
+        url: "https://www.amazon.com/First-Hive-Honey-Harvest/dp/1918815038/",
+      },
+      {
+        store: "Barnes & Noble",
+        url: "https://www.barnesandnoble.com/w/from-first-hive-to-honey-harvest-rajko-radivojac/1151276199",
+      },
+      {
+        store: "Walmart",
+        url: "https://www.walmart.com/ip/From-First-Hive-to-Honey-Harvest-Paperback/20941570447",
+      },
+    ],
     hasExcerpt: false,
-    inDevelopment: true,
+    publisher: "Northern Bee Books",
     review: {
       quote:
         "There are many books available for people interested in beekeeping, but this one stands out as an excellent resource for beginners. The information is accurate, well organized, and presented in a way that is easy to read and understand. The accompanying photographs complement the text and help guide readers through each topic, making complex concepts easier to grasp. What I appreciated most was the author's honest, practical approach. He shares his extensive experience with humility and kindness, offering clear guidance that makes you feel as though you are sitting across the table having a conversation with him. I highly recommend this book to anyone who is new to beekeeping and looking for a reliable, approachable guide to getting started.",
