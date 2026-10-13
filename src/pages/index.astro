@@ -19,33 +19,27 @@ const coloringBooks = books.filter((b) => b.category === "coloring");
   <Nav />
   <main>
     <Hero />
-    {
-      beekeepingBooks.map((book, i) => (
-        <BookSection
-          book={book}
-          index={i}
-          sectionTitle={i === 0 ? "Beekeeping Books" : undefined}
-        />
-      ))
-    }
-    {
-      childrensBooks.map((book, i) => (
-        <BookSection
-          book={book}
-          index={beekeepingBooks.length + i}
-          sectionTitle={i === 0 ? "Children's Books" : undefined}
-        />
-      ))
-    }
-    {
-      coloringBooks.map((book, i) => (
-        <BookSection
-          book={book}
-          index={beekeepingBooks.length + childrensBooks.length + i}
-          sectionTitle={i === 0 ? "Cozy Coloring Books" : undefined}
-        />
-      ))
-    }
+    {beekeepingBooks.map((book, i) => (
+      <BookSection
+        book={book}
+        index={i}
+        sectionTitle={i === 0 ? "Beekeeping Books" : undefined}
+      />
+    ))}
+    {childrensBooks.map((book, i) => (
+      <BookSection
+        book={book}
+        index={beekeepingBooks.length + i}
+        sectionTitle={i === 0 ? "Children's Books" : undefined}
+      />
+    ))}
+    {coloringBooks.map((book, i) => (
+      <BookSection
+        book={book}
+        index={beekeepingBooks.length + childrensBooks.length + i}
+        sectionTitle={i === 0 ? "Cozy Coloring Books" : undefined}
+      />
+    ))}
     <Media />
     <About />
     <Newsletter />
