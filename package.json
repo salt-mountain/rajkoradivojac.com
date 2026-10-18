@@ -16,7 +16,8 @@
     "typecheck:functions": "tsc -p functions/tsconfig.json",
     "typecheck:infra": "cd infra && bun run typecheck",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "synth:infra": "cd infra && bunx cdk synth --quiet"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",

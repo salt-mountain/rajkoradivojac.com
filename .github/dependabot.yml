@@ -13,13 +13,26 @@ updates:
       semver-major-days: 30
       semver-minor-days: 7
       semver-patch-days: 7
-    # TypeScript 7 is the native (Go) compiler rewrite. `astro check` (via
-    # @astrojs/check) only supports TS "^5 || ^6", so a TS7 bump crashes the
-    # Typecheck step in CI. Stay on the 6.x line — patch/minor updates (incl.
-    # security) still flow — until @astrojs/check declares TS7 support.
+    # TypeScript 7 is the native (Go) compiler rewrite and ships no JS compiler
+    # API. Both fleet typecheckers break on it: `astro check` (@astrojs/check
+    # supports TS "^5 || ^6") and `vue-tsc` (wraps `typescript/lib/tsc`, removed
+    # in TS7). Stay on the 6.x line — patch/minor (incl. security) still flow —
+    # until both declare TS7 support.
     ignore:
       - dependency-name: "typescript"
         update-types: ["version-update:semver-major"]
+    # Batch non-major updates into one PR per run so fewer PRs race each other
+    # to main (auto-merge doesn't require up-to-date branches). Majors stay
+    # separate PRs for a human; .github/workflows/automerge.yml merges the rest.
+    groups:
+      bun-minor-patch:
+        applies-to: version-updates
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+      bun-security:
+        applies-to: security-updates
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -28,8 +41,17 @@ updates:
     open-pull-requests-limit: 5
     cooldown:
       default-days: 7
+    groups:
+      actions-minor-patch:
+        applies-to: version-updates
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
 
-  # The CDK infra app (its own package.json + bun.lock, separate from the root).
+  # The CDK infra app (its own package.json + bun.lock, separate from the
+  # root). verify typechecks and synthesizes it, so its non-major updates
+  # auto-merge too; CDK deploys stay manual (`cdk deploy`), so a merged
+  # update never changes AWS by itself. No TypeScript ignore: infra already
+  # runs TypeScript 7 (plain tsc, no astro check / vue-tsc).
   - package-ecosystem: "bun"
     directory: "/infra"
     schedule:
@@ -40,3 +62,12 @@ updates:
       semver-major-days: 30
       semver-minor-days: 7
       semver-patch-days: 7
+    groups:
+      infra-minor-patch:
+        applies-to: version-updates
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+      infra-security:
+        applies-to: security-updates
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
