@@ -24,6 +24,10 @@ describe("_headers", () => {
     expect(csp).toContain("https://i.ytimg.com");
   });
 
+  it("lets the media modal frame YouTube embeds", () => {
+    expect(csp).toContain("frame-src https://www.youtube.com");
+  });
+
   it("keeps forms and connections same-origin", () => {
     expect(csp).toContain("form-action 'self'");
     expect(csp).toContain("default-src 'self'");
