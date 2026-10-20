@@ -35,3 +35,7 @@ ops/
 
 # Source excerpt PDFs to upload to R2 — never committed
 excerpts-src/
+
+# Claude Code local overrides
+.claude/settings.local.json
+CLAUDE.local.md
