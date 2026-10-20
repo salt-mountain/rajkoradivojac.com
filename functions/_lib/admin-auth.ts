@@ -107,11 +107,12 @@ function allowlisted(email: string, env: Env): boolean {
   return allow.includes(email.toLowerCase());
 }
 
-/**
- * Gate admin endpoints. Prefers the signed Access JWT; falls back to the
- * Cf-Access-Authenticated-User-Email header (used for local dev, where the JWT is
- * absent). Returns the AdminContext or a 403 Response.
- */
+// Production sets both Access vars.
+function accessConfigured(env: Env): boolean {
+  return Boolean(env.ACCESS_TEAM_DOMAIN && env.ACCESS_AUD);
+}
+
+// Gate admin routes; require a verified JWT.
 export async function requireAdmin(
   request: Request,
   env: Env,
@@ -128,6 +129,9 @@ export async function requireAdmin(
     if (!ctx || !allowlisted(ctx.email, env)) return forbidden();
     return ctx;
   }
+
+  // Trust the email header only in dev.
+  if (accessConfigured(env)) return forbidden();
 
   const email = request.headers.get("Cf-Access-Authenticated-User-Email");
   if (!email || !allowlisted(email, env)) return forbidden();
