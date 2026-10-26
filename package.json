@@ -21,13 +21,13 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
-    "astro": "7.4.0",
+    "astro": "7.4.1",
     "aws4fetch": "^1.0.20",
     "tailwindcss": "4.3.3"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.10",
-    "@cloudflare/workers-types": "^5.20261016.1",
+    "@astrojs/check": "^0.9.11",
+    "@cloudflare/workers-types": "^5.20261019.1",
     "prettier": "^3.9.10",
     "prettier-plugin-astro": "^1.1.1",
     "typescript": "^6.0.3",
