@@ -67,6 +67,24 @@ export const books: Book[] = [
     },
   },
   {
+    id: "book-9",
+    title: "Cozy Beekeeping",
+    description:
+      "Slow down and color a little sweetness into your day.\n\nStep into the gentle world of Cozy Beekeeping, a coloring book for adults and teens inspired by bees, blooming gardens, and quiet country life. Explore flower-filled apiaries, beekeeping tools, honey jars, cozy tea settings, seasonal scenes, and even a sleepy cat beside the supplies.\n\nInside you'll find:\n\n- 80 illustrated pages: 40 larger designs and 40 pages of smaller themed arrangements.\n- A varied mix of open shapes and finer details for both short coloring breaks and longer sessions.\n- Two color test pages for trying tools and planning palettes.\n- A spacious 8.5 x 8.5-inch square format.\n\nWhether you love bees, enjoy gardening, keep a hive, or simply appreciate the warmth of country living, this collection invites you to make each scene your own.\n\nDesigns are printed on both sides of the pages. Colored pencils are recommended; test other coloring tools first.\n\nChoose a page, gather your favorite colors, and enjoy a peaceful moment in the apiary.",
+    boldInDescription: [
+      "Slow down and color a little sweetness into your day.",
+      "Cozy Beekeeping",
+      "Inside you'll find:",
+      "Designs are printed on both sides of the pages.",
+    ],
+    coverImage: "/images/book-9-cover.jpg",
+    category: "beekeeping",
+    buyLinks: [
+      { store: "Amazon", url: "https://www.amazon.com/dp/B0HR7JDZGW" },
+    ],
+    hasExcerpt: false,
+  },
+  {
     id: "book-8",
     slug: "beekeeping-journal",
     title: "Beekeeping Journal",
